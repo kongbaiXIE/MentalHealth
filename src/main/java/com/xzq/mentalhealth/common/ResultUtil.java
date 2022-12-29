@@ -5,7 +5,7 @@ package com.xzq.mentalhealth.common;
  *
  * @author xzq
  */
-public class ResultUtils {
+public class ResultUtil {
 
     /**
      * 成功

@@ -28,7 +28,7 @@ public class Knife4jConfiguration {
         Docket docket=new Docket(DocumentationType.OAS_30)
                 .apiInfo(new ApiInfoBuilder()
                         .title("心理健康咨询系统 ")
-                        .description("组队项目")
+                        .description("心理健康咨询项目")
 //                        .termsOfServiceUrl("http://yaomaoyang.com")
                         .contact(new Contact("谢志强",null,"2498529257@qq.com"))
                         .version("3.0")

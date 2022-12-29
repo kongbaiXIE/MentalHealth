@@ -24,6 +24,8 @@ public enum ErrorCode {
      */
     private final String message;
 
+
+
     /**
      * 状态码描述（详情）
      */
