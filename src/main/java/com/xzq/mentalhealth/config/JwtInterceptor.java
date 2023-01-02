@@ -54,7 +54,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         }
         try{
             //用户名验证token
-            JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getUserAccount())).build();
+            JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getUserPassword())).build();
             jwtVerifier.verify(token);//验证token
         }catch (JWTVerificationException E){
             throw new BusinessException(ErrorCode.NOT_LOGIN,"token验证失败，请重新登录");

@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
 import lombok.Data;
 
 /**
@@ -86,9 +89,17 @@ public class User implements Serializable {
      */
     @TableField(value = "isDelete")
     private Integer isDelete;
-
+    /**
+     * token信息
+     */
     @TableField(exist = false)
     private String token;
+
+    /**
+     * 角色列表
+     */
+    @TableField(exist = false)
+    private List<Long> roleList;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

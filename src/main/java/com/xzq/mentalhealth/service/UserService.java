@@ -1,7 +1,11 @@
 package com.xzq.mentalhealth.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xzq.mentalhealth.model.entity.User;
+import com.xzq.mentalhealth.model.vo.UserVO;
+
+import java.util.List;
 
 
 /**
@@ -19,7 +23,7 @@ public interface UserService extends IService<User> {
      * @return 新用户id
      */
 
-    long userRegister( String userAccount, String userPassword, String checkPassword);
+    long userRegister(String userAccount, String userPassword, String checkPassword);
 
     /**
      *  用户登录
@@ -35,4 +39,29 @@ public interface UserService extends IService<User> {
      * @return
      */
     User safetyUser(User originUser);
+
+    /**
+     * 修改用户
+     * @param user
+     * @return
+     */
+    Integer editUser(User user);
+
+    /**
+     * 添加用户
+     * @param user
+     * @return
+     */
+    Integer addUser(User user);
+
+    /**
+     * 分页查询
+     * @param pageNum
+     * @param pageSize
+     * @param username
+     * @param email
+     * @param phone
+     * @return
+     */
+    Page<User> userList(long pageNum, long pageSize, String username, String email, String phone);
 }
