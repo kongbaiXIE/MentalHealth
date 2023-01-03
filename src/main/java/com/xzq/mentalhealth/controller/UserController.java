@@ -8,7 +8,6 @@ import com.xzq.mentalhealth.exception.BusinessException;
 import com.xzq.mentalhealth.model.entity.User;
 import com.xzq.mentalhealth.model.requsest.UserLoginRequest;
 import com.xzq.mentalhealth.model.requsest.UserRegisterRequest;
-import com.xzq.mentalhealth.model.vo.UserVO;
 import com.xzq.mentalhealth.service.UserService;
 import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;

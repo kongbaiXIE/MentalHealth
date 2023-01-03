@@ -6,17 +6,15 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
-
 import lombok.Data;
 
 /**
- * 用户
- * @TableName user
+ * 文件
+ * @TableName files
  */
-@TableName(value ="user")
+@TableName(value ="files")
 @Data
-public class User implements Serializable {
+public class Files implements Serializable {
     /**
      * id
      */
@@ -24,46 +22,34 @@ public class User implements Serializable {
     private Long id;
 
     /**
-     * 用户昵称
+     * 文件名称
      */
-    @TableField(value = "username")
-    private String username;
+    @TableField(value = "name")
+    private String name;
 
     /**
-     * 账号
+     * 文件类型
      */
-    @TableField(value = "userAccount")
-    private String userAccount;
+    @TableField(value = "type")
+    private String type;
 
     /**
-     * 用户头像
+     * 文件大小
      */
-    @TableField(value = "avatarUrl")
-    private String avatarUrl;
+    @TableField(value = "size")
+    private Long size;
 
     /**
-     * 性别
+     * 下载链接
      */
-    @TableField(value = "gender")
-    private Integer gender;
+    @TableField(value = "url")
+    private String url;
 
     /**
-     * 密码
+     * 文件MD5
      */
-    @TableField(value = "userPassword")
-    private String userPassword;
-
-    /**
-     * 电话
-     */
-    @TableField(value = "phone")
-    private String phone;
-
-    /**
-     * 邮箱
-     */
-    @TableField(value = "email")
-    private String email;
+    @TableField(value = "md5")
+    private String md5;
 
     /**
      * 状态 0 - 正常
@@ -88,17 +74,6 @@ public class User implements Serializable {
      */
     @TableField(value = "isDelete")
     private Integer isDelete;
-    /**
-     * token信息
-     */
-    @TableField(exist = false)
-    private String token;
-
-    /**
-     * 角色列表
-     */
-    @TableField(exist = false)
-    private List<Long> roleList;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
