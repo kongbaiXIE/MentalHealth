@@ -64,4 +64,6 @@ public interface UserService extends IService<User> {
      * @return
      */
     Page<User> userList(long pageNum, long pageSize, String username, String email, String phone);
+
+    User findByUserAccount(String userAccount);
 }

@@ -1,5 +1,6 @@
 package com.xzq.mentalhealth.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xzq.mentalhealth.common.BaseResponse;
 import com.xzq.mentalhealth.common.ErrorCode;
@@ -150,5 +151,22 @@ public class UserController {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"修改失败");
         }
         return ResultUtil.success(integer);
+    }
+
+    /**
+     * 通过用户名查找用户
+     * @param userAccount
+     * @return
+     */
+    @GetMapping("/userAccount/{userAccount}")
+    public BaseResponse<User> findByUserAccount(@PathVariable String userAccount) {
+        if(userAccount == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User byUserAccount = userService.findByUserAccount(userAccount);
+        if (byUserAccount == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"查询不到该用户");
+        }
+        return ResultUtil.success(byUserAccount);
     }
 }

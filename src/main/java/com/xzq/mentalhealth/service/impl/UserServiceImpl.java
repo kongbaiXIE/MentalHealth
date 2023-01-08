@@ -125,31 +125,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return safetyUser(user);
     }
 
-    /**
-     * 用户脱敏
-     * @param originUser
-     * @return
-     */
-    @Override
-    public User safetyUser(User originUser){
-        if(originUser == null){
-            return null;
-        }
-        User safeUser = new User();
-        safeUser.setId(originUser.getId());
-        safeUser.setUsername(originUser.getUsername());
-        safeUser.setUserAccount(originUser.getUserAccount());
-        safeUser.setAvatarUrl(originUser.getAvatarUrl());
-        safeUser.setGender(originUser.getGender());
-        safeUser.setEmail(originUser.getEmail());
-        safeUser.setUserStatus(originUser.getUserStatus());
-        safeUser.setPhone(originUser.getPhone());
-        safeUser.setCreateTime(originUser.getCreateTime());
-        safeUser.setUpdateTime(originUser.getUpdateTime());
-        safeUser.setToken(originUser.getToken());
 
-        return safeUser;
-    }
 
     /**
      * 管理员修改用户
@@ -162,8 +138,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         Long userId = user.getId();
         //拿到数据库中的用户数据
         User oldUser = userMapper.selectById(userId);
-        if (Objects.equals(user.getUserAccount(), oldUser.getUserAccount())){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"用户账号重复");
+        if (Objects.equals(oldUser.getUsername(), user.getUsername())){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"用户昵称未发生改变");
         }
         return userMapper.updateById(user);
     }
@@ -211,6 +187,39 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             userQueryWrapper.like("address", phone);
         }
         return userMapper.selectPage(userPage, userQueryWrapper);
+    }
+
+    @Override
+    public User findByUserAccount(String userAccount) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("userAccount", userAccount);
+        User user = userMapper.selectOne(queryWrapper);
+        return safetyUser(user);
+    }
+    /**
+     * 用户脱敏
+     * @param originUser
+     * @return
+     */
+    @Override
+    public User safetyUser(User originUser){
+        if(originUser == null){
+            return null;
+        }
+        User safeUser = new User();
+        safeUser.setId(originUser.getId());
+        safeUser.setUsername(originUser.getUsername());
+        safeUser.setUserAccount(originUser.getUserAccount());
+        safeUser.setAvatarUrl(originUser.getAvatarUrl());
+        safeUser.setGender(originUser.getGender());
+        safeUser.setEmail(originUser.getEmail());
+        safeUser.setUserStatus(originUser.getUserStatus());
+        safeUser.setPhone(originUser.getPhone());
+        safeUser.setCreateTime(originUser.getCreateTime());
+        safeUser.setUpdateTime(originUser.getUpdateTime());
+        safeUser.setToken(originUser.getToken());
+
+        return safeUser;
     }
 }
 
