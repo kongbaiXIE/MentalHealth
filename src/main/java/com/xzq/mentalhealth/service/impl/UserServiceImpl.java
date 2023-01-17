@@ -5,22 +5,33 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xzq.mentalhealth.common.ErrorCode;
 import com.xzq.mentalhealth.exception.BusinessException;
+import com.xzq.mentalhealth.mapper.MenuMapper;
 import com.xzq.mentalhealth.mapper.RoleMapper;
+import com.xzq.mentalhealth.mapper.RoleMenuMapper;
 import com.xzq.mentalhealth.mapper.UserMapper;
-import com.xzq.mentalhealth.mapper.UserRoleMapper;
+import com.xzq.mentalhealth.model.entity.Menu;
+import com.xzq.mentalhealth.model.entity.Role;
+import com.xzq.mentalhealth.model.entity.RoleMenu;
 import com.xzq.mentalhealth.model.entity.User;
+import com.xzq.mentalhealth.model.vo.UserVO;
+import com.xzq.mentalhealth.service.MenuService;
+import com.xzq.mentalhealth.service.RoleService;
 import com.xzq.mentalhealth.service.UserService;
 import com.xzq.mentalhealth.untils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
 * @author 谢志强
@@ -36,7 +47,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Resource
     RoleMapper roleMapper;
     @Resource
-    UserRoleMapper userRoleMapper;
+    RoleMenuMapper roleMenuMapper;
+    @Resource
+    RoleService roleService;
+    @Resource
+    MenuService menuService;
     /**
      * 盐值 加密密码
      */
@@ -75,6 +90,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         User user = new User();
         user.setUserAccount(userAccount);
         user.setUserPassword(encryptPassword);
+        //todo 感觉不需要在添加枚举值或者一个常量类，如果使用多的话可以考虑
+        user.setRole("ROLE_USER");
         boolean saveResult = this.save(user);
         if (!saveResult){
             return -1;
@@ -89,7 +106,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      * @return
      */
     @Override
-    public User userLogin(String userAccount, String userPassword) {
+    public UserVO userLogin(String userAccount, String userPassword) {
         //1.校验
         if (StringUtils.isAnyBlank(userAccount,userPassword)){
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"参数为空");
@@ -120,9 +137,37 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         // 生成token
         String token = TokenUtils.genToken(user);
-        user.setToken(token);
+        UserVO userVO = new UserVO();
+        //将用户数据拷贝到userVO上
+        BeanUtils.copyProperties(user,userVO);
+        String flag = userVO.getRole();
+        //通过用户表中的角色唯一标识查询出对应的角色
+        QueryWrapper<Role> roleQueryWrapper = new QueryWrapper<>();
+        roleQueryWrapper.eq("flag",flag);
+        Role role = roleMapper.selectOne(roleQueryWrapper);
+        if (role == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        //通过该角色id查询对应的菜单id列表
+        Long roleId = role.getId();
+        //由于在之前已经有通过roleId查询相应的菜单id集合所以直接调用
+        List<Long> menuIdList = roleService.getRoleMenu(roleId);
+        //查询菜单表中的数据
+        List<Menu> menus = menuService.findAll("");
+        // 返回最后该角色对应的菜单列表
+        List<Menu> roleMenus = new ArrayList<>();
+        for (Menu menu : menus) {
+            if (menuIdList.contains(menu.getId())){
+                roleMenus.add(menu);
+            }
+            List<Menu> children = menu.getChildren();
+            children.removeIf(child -> !menuIdList.contains(child.getId()));
+        }
+
+        userVO.setMenuList(roleMenus);
+        userVO.setToken(token);
         ////脱敏
-        return safetyUser(user);
+        return userVO;
     }
 
 
@@ -190,36 +235,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public User findByUserAccount(String userAccount) {
+    public UserVO findByUserAccount(String userAccount) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("userAccount", userAccount);
         User user = userMapper.selectOne(queryWrapper);
-        return safetyUser(user);
-    }
-    /**
-     * 用户脱敏
-     * @param originUser
-     * @return
-     */
-    @Override
-    public User safetyUser(User originUser){
-        if(originUser == null){
-            return null;
-        }
-        User safeUser = new User();
-        safeUser.setId(originUser.getId());
-        safeUser.setUsername(originUser.getUsername());
-        safeUser.setUserAccount(originUser.getUserAccount());
-        safeUser.setAvatarUrl(originUser.getAvatarUrl());
-        safeUser.setGender(originUser.getGender());
-        safeUser.setEmail(originUser.getEmail());
-        safeUser.setUserStatus(originUser.getUserStatus());
-        safeUser.setPhone(originUser.getPhone());
-        safeUser.setCreateTime(originUser.getCreateTime());
-        safeUser.setUpdateTime(originUser.getUpdateTime());
-        safeUser.setToken(originUser.getToken());
-
-        return safeUser;
+        UserVO userVO = new UserVO();
+        //将用户数据拷贝到userVO上
+        BeanUtils.copyProperties(user,userVO);
+        return userVO;
     }
 }
 

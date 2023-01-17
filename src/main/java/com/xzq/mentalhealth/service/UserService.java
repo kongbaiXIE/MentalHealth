@@ -31,14 +31,7 @@ public interface UserService extends IService<User> {
      * @param userPassword 用户密码
      * @return 用户
      */
-    User userLogin(String userAccount, String userPassword);
-
-    /**
-     * 用户脱敏
-     * @param originUser
-     * @return
-     */
-    User safetyUser(User originUser);
+    UserVO userLogin(String userAccount, String userPassword);
 
     /**
      * 修改用户
@@ -65,5 +58,5 @@ public interface UserService extends IService<User> {
      */
     Page<User> userList(long pageNum, long pageSize, String username, String email, String phone);
 
-    User findByUserAccount(String userAccount);
+    UserVO findByUserAccount(String userAccount);
 }

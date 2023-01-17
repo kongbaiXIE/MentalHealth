@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xzq.mentalhealth.model.entity.Menu;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
 * @author 谢志强
 * @description 针对表【menu(菜单表)】的数据库操作Service
@@ -33,4 +35,5 @@ public interface MenuService extends IService<Menu> {
      */
     Integer editMenu(Menu Menu);
 
+    List<Menu> findAll(String name);
 }

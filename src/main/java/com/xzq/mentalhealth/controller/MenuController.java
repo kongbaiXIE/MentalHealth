@@ -1,18 +1,21 @@
 package com.xzq.mentalhealth.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xzq.mentalhealth.common.BaseResponse;
 import com.xzq.mentalhealth.common.ErrorCode;
 import com.xzq.mentalhealth.common.ResultUtil;
 import com.xzq.mentalhealth.exception.BusinessException;
+import com.xzq.mentalhealth.mapper.DictMapper;
+import com.xzq.mentalhealth.model.entity.Dict;
 import com.xzq.mentalhealth.model.entity.Menu;
 import com.xzq.mentalhealth.service.MenuService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *  菜单接口
@@ -25,28 +28,47 @@ public class MenuController {
 
     @Autowired
     private MenuService menuService;
+
+    @Autowired
+    private DictMapper dictMapper;
+    ///**
+    // * 分页查询
+    // * @param pageNum
+    // * @param pageSize
+    // * @param name
+    // * @return
+    // */
+    //@GetMapping("/page")
+    //public BaseResponse<Page<Menu>> pageMenu(@RequestParam long pageNum,
+    //                                         @RequestParam long pageSize,
+    //                                         @RequestParam(defaultValue = "") String name) {
+    //    if (pageNum < 0 && pageSize<0){
+    //        throw new BusinessException(ErrorCode.PARAMS_ERROR);
+    //    }
+    //    Page<Menu> MenuList = menuService.MenuList(pageNum, pageSize, name);
+    //    if (MenuList == null){
+    //        throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+    //    }
+    //
+    //    return ResultUtil.success(MenuList);
+    //}
+
     /**
-     * 分页查询
-     * @param pageNum
-     * @param pageSize
+     * 查看菜单列表
      * @param name
      * @return
      */
-    @GetMapping("/page")
-    public BaseResponse<Page<Menu>> pageMenu(@RequestParam long pageNum,
-                                             @RequestParam long pageSize,
-                                             @RequestParam(defaultValue = "") String name) {
-        if (pageNum < 0 && pageSize<0){
+    @GetMapping("/findAll")
+    public BaseResponse<List<Menu>> findAll(@RequestParam(defaultValue = " ") String name){
+        if(name == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        Page<Menu> MenuList = menuService.MenuList(pageNum, pageSize, name);
-        if (MenuList == null){
+        List<Menu> menuList = menuService.findAll(name);
+        if (menuList == null){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR);
         }
-
-        return ResultUtil.success(MenuList);
+        return ResultUtil.success(menuList);
     }
-
     /**
      * 删除数据
      * @param id
@@ -113,6 +135,28 @@ public class MenuController {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"修改失败");
         }
         return ResultUtil.success(integer);
+    }
+
+    /**
+     * 图标数据列表
+     * @return list<Dict>
+     */
+    @GetMapping("/icons")
+    public BaseResponse<List<Dict>> getIcons() {
+        QueryWrapper<Dict> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("type", "icon");
+        List<Dict> dictList = dictMapper.selectList(queryWrapper);
+        return ResultUtil.success(dictList);
+    }
+
+    /**
+     * 查询菜单所以id
+     * @return
+     */
+    @GetMapping("/ids")
+    public BaseResponse<List<Long>> findAllIds() {
+        List<Long> menuList = menuService.list().stream().map(Menu::getId).collect(Collectors.toList());
+        return ResultUtil.success(menuList);
     }
 
 }

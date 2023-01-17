@@ -5,13 +5,13 @@ import com.xzq.mentalhealth.common.BaseResponse;
 import com.xzq.mentalhealth.common.ErrorCode;
 import com.xzq.mentalhealth.common.ResultUtil;
 import com.xzq.mentalhealth.exception.BusinessException;
+import com.xzq.mentalhealth.model.entity.Menu;
 import com.xzq.mentalhealth.model.entity.Role;
 import com.xzq.mentalhealth.service.RoleService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -32,7 +32,7 @@ public class RoleController {
      * @return
      */
     @GetMapping("/page")
-    public BaseResponse<Page<Role>> pagerole(@RequestParam long pageNum,
+    public BaseResponse<Page<Role>> pageRole(@RequestParam long pageNum,
                                              @RequestParam long pageSize,
                                              @RequestParam(defaultValue = "") String name) {
         if (pageNum < 0 && pageSize<0){
@@ -112,6 +112,54 @@ public class RoleController {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"修改失败");
         }
         return ResultUtil.success(integer);
+    }
+
+    /**
+     * 将角色绑定对应的菜单
+     * @param roleId
+     * @param menuIds
+     * @return
+     */
+    @PostMapping("/roleMenu/{roleId}")
+    public  BaseResponse<Integer> roleMenu(@PathVariable Long roleId,@RequestBody List<Long> menuIds){
+        if (roleId < 0 || menuIds == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        roleService.addRoleMenu(roleId,menuIds);
+
+        return ResultUtil.success(1);
+    }
+
+    /**
+     * 通过roleId 查看menuId列表
+     * @param roleId
+     * @return
+     */
+    @GetMapping("/roleMenu/{roleId}")
+    public BaseResponse<List<Long>> getRoleMenu(@PathVariable Long roleId) {
+       if (roleId < 0){
+           throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+       }
+        List<Long> menuIdList = roleService.getRoleMenu(roleId);
+        if (menuIdList == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        return ResultUtil.success(menuIdList);
+    }
+
+
+    /**
+     * 查看角色列表
+     * @param name
+     * @return
+     */
+    @GetMapping("/findAll")
+    public BaseResponse<List<Role>> findAll(@RequestParam(defaultValue = " ") String name){
+        List<Role> roleList = roleService.findAll(name);
+        if (roleList == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        return ResultUtil.success(roleList);
     }
 
 }

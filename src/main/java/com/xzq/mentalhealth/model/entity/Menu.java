@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -49,7 +51,7 @@ public class Menu implements Serializable {
      * 父级id
      */
     @TableField(value = "pid")
-    private Integer pid;
+    private Long pid;
 
     /**
      * 页面路径
@@ -82,5 +84,10 @@ public class Menu implements Serializable {
     private Integer isDelete;
 
     @TableField(exist = false)
+    private List<Menu> children;
+
+    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+
 }

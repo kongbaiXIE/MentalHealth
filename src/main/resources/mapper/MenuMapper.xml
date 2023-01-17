@@ -10,7 +10,7 @@
             <result property="path" column="path" jdbcType="VARCHAR"/>
             <result property="icon" column="icon" jdbcType="VARCHAR"/>
             <result property="description" column="description" jdbcType="VARCHAR"/>
-            <result property="pid" column="pid" jdbcType="INTEGER"/>
+            <result property="pid" column="pid" jdbcType="BIGINT"/>
             <result property="page_path" column="page_path" jdbcType="VARCHAR"/>
             <result property="sort_num" column="sort_num" jdbcType="INTEGER"/>
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>

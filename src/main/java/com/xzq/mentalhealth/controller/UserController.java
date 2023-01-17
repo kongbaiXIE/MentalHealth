@@ -9,6 +9,7 @@ import com.xzq.mentalhealth.exception.BusinessException;
 import com.xzq.mentalhealth.model.entity.User;
 import com.xzq.mentalhealth.model.requsest.UserLoginRequest;
 import com.xzq.mentalhealth.model.requsest.UserRegisterRequest;
+import com.xzq.mentalhealth.model.vo.UserVO;
 import com.xzq.mentalhealth.service.UserService;
 import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
@@ -47,7 +48,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public BaseResponse<User> userLogin(@RequestBody UserLoginRequest userLoginRequest){
+    public BaseResponse<UserVO> userLogin(@RequestBody UserLoginRequest userLoginRequest){
         if (userLoginRequest == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -56,7 +57,7 @@ public class UserController {
         if (StringUtils.isAnyBlank(userAccount,userPassword)){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User user = userService.userLogin(userAccount, userPassword);
+        UserVO user = userService.userLogin(userAccount, userPassword);
         return ResultUtil.success(user);
     }
     /**
@@ -159,11 +160,11 @@ public class UserController {
      * @return
      */
     @GetMapping("/userAccount/{userAccount}")
-    public BaseResponse<User> findByUserAccount(@PathVariable String userAccount) {
+    public BaseResponse<UserVO> findByUserAccount(@PathVariable String userAccount) {
         if(userAccount == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User byUserAccount = userService.findByUserAccount(userAccount);
+        UserVO byUserAccount = userService.findByUserAccount(userAccount);
         if (byUserAccount == null){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"查询不到该用户");
         }
