@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xzq.mentalhealth.mapper.QuestionMapper">
+
+    <resultMap id="BaseResultMap" type="com.xzq.mentalhealth.model.entity.Question">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="INTEGER"/>
+            <result property="optionA" column="optionA" jdbcType="VARCHAR"/>
+            <result property="optionB" column="optionB" jdbcType="VARCHAR"/>
+            <result property="optionC" column="optionC" jdbcType="VARCHAR"/>
+            <result property="optionD" column="optionD" jdbcType="VARCHAR"/>
+            <result property="score" column="score" jdbcType="INTEGER"/>
+            <result property="answer" column="answer" jdbcType="VARCHAR"/>
+            <result property="categoryId" column="categoryId" jdbcType="BIGINT"/>
+            <result property="userId" column="userId" jdbcType="BIGINT"/>
+            <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+            <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,type,
+        optionA,optionB,optionC,
+        optionD,score,answer,
+        categoryId,userId,createTime,
+        updateTime,isDelete
+    </sql>
+</mapper>
