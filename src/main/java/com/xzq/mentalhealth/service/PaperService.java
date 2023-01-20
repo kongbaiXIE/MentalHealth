@@ -2,6 +2,7 @@ package com.xzq.mentalhealth.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.xzq.mentalhealth.model.dto.HandPaperDTO;
 import com.xzq.mentalhealth.model.dto.PaperDTO;
 import com.xzq.mentalhealth.model.entity.Paper;
 import com.xzq.mentalhealth.model.entity.Question;
@@ -30,8 +31,12 @@ public interface PaperService extends IService<Paper> {
     Integer addPaper(Paper paper);
 
     Integer editPaper(Paper paper);
-    //创建问卷
+    //自动创建问卷
     Boolean takePaper(PaperDTO paperDTO);
     //查看问卷
     List<Question> viewPaper(Long paperId);
+    //返回给学生的试卷
+    List<Question> safeViewPaper(Long paperId);
+    //手动创建问卷
+    Boolean handPaper(HandPaperDTO handPaperDTO);
 }

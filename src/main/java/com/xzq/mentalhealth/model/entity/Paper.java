@@ -29,10 +29,10 @@ public class Paper implements Serializable {
     private String name;
 
     /**
-     * 测评问卷总分
+     * 测评问卷解析
      */
-    @TableField(value = "score")
-    private Integer score;
+    @TableField(value = "result")
+    private String result;
 
     /**
      * 问卷描述

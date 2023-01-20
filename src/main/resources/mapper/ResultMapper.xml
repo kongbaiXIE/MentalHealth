@@ -2,22 +2,22 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xzq.mentalhealth.mapper.PaperMapper">
+<mapper namespace="com.xzq.mentalhealth.mapper.ResultMapper">
 
-    <resultMap id="BaseResultMap" type="com.xzq.mentalhealth.model.entity.Paper">
+    <resultMap id="BaseResultMap" type="com.xzq.mentalhealth.model.entity.Result">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
-            <result property="result" column="result" jdbcType="VARCHAR"/>
-            <result property="categoryId" column="categoryId" jdbcType="BIGINT"/>
-            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="score" column="score" jdbcType="INTEGER"/>
+            <result property="userId" column="userId" jdbcType="BIGINT"/>
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
             <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,name,result,
-        categoryId,description,createTime,
-        updateTime,isDelete
+        id,name,score,
+        direction,userId,paperId,
+        result,createTime,updateTime,
+        isDelete
     </sql>
 </mapper>
