@@ -11,56 +11,51 @@ import java.util.List;
 import lombok.Data;
 
 /**
- * 测评结果表
- * @TableName result
+ * 课程科目
+ * @TableName subject
  */
-@TableName(value ="result")
+@TableName(value ="subject")
 @Data
-public class Result implements Serializable {
+public class Subject implements Serializable {
     /**
      * id
      */
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
-     * 测评问卷题目
+     * 课程科目
      */
-    @TableField(value = "name")
-    private String name;
+    private String title;
 
     /**
-     * 最终得分
+     * 父id
      */
-    @TableField(value = "score")
-    private Integer score;
+    private Long pid;
+
     /**
-     * 测评用户id
+     * 排序字段
      */
-    @TableField(value = "userId")
-    private Long userId;
+    private Integer sort;
 
     /**
      * 创建时间
      */
-    @TableField(value = "createTime")
     private Date createTime;
 
     /**
-     *
+     * 
      */
-    @TableField(value = "updateTime")
     private Date updateTime;
 
     /**
      * 是否删除
      */
-    @TableField(value = "isDelete")
     private Integer isDelete;
 
     @TableField(exist = false)
-    private String username;
-    @TableField(exist = false)
+    private List<Subject> children;
 
+    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

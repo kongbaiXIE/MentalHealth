@@ -1,17 +1,12 @@
 package com.xzq.mentalhealth.controller;
 
-
-import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xzq.mentalhealth.common.BaseResponse;
 import com.xzq.mentalhealth.common.ErrorCode;
 import com.xzq.mentalhealth.common.ResultUtil;
-import com.xzq.mentalhealth.config.AuthAccess;
 import com.xzq.mentalhealth.exception.BusinessException;
-import com.xzq.mentalhealth.model.dto.ResultDTO;
-import com.xzq.mentalhealth.model.entity.Result;
-import com.xzq.mentalhealth.model.vo.ResultVO;
-import com.xzq.mentalhealth.service.ResultService;
+import com.xzq.mentalhealth.model.entity.Teacher;
+import com.xzq.mentalhealth.service.TeacherService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,73 +14,55 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 测评问卷接口
+ * 课程讲师接口
  */
-@Api(tags = "测评结果模块")
+@Api(tags = "讲师模块")
 @RestController
-@RequestMapping("/result")
-public class ResultController {
-
+@RequestMapping("/teacher")
+public class TeacherController {
 
 
     @Autowired
-    private ResultService resultService;
+    private TeacherService teacherService;
 
     /**
-     * 通过比对学生提交的问卷得出结果
-     * @param resultDTO
-     * @return
-     */
-    @PostMapping("/addStuQuestions")
-    public BaseResponse<ResultVO> addStuResult(@RequestBody ResultDTO resultDTO){
-        if (CollUtil.isEmpty(resultDTO.getAddQuestion())){
-            throw new BusinessException(ErrorCode.NULL_ERROR);
-        }
-        ResultVO resultVO = resultService.addStuResult(resultDTO);
-        if (resultVO == null){
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"提交的问卷信息有误");
-        }
-        return ResultUtil.success(resultVO);
-
-    }
-
-    /**
-     * 分页查询结果
+     * 分页查询
      * @param pageNum
      * @param pageSize
      * @param name
      * @return
      */
     @GetMapping("/page")
-    public BaseResponse<Page<Result>> pageResult(@RequestParam long pageNum,
-                                               @RequestParam long pageSize,
-                                               @RequestParam(defaultValue = "") String name) {
+    public BaseResponse<Page<Teacher>> pageTeacher(@RequestParam long pageNum,
+                                                   @RequestParam long pageSize,
+                                                   @RequestParam(defaultValue = "") String name,
+                                                   @RequestParam(defaultValue = "") Integer level) {
         if (pageNum < 0 && pageSize<0){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        Page<Result> resultPage = resultService.resultList(pageNum, pageSize, name);
-        if (resultPage == null){
+        Page<Teacher> TeacherList = teacherService.teacherList(pageNum, pageSize, name,level);
+        if (TeacherList == null){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR);
         }
 
-        return ResultUtil.success(resultPage);
+        return ResultUtil.success(TeacherList);
     }
+
     /**
-     * 查看测评结果
+     * 查询讲师表所有数据
      * @param name
      * @return
      */
-    @AuthAccess
     @GetMapping("/findAll")
-    public BaseResponse<List<Result>> findAll(@RequestParam(defaultValue = " ") String name){
+    public BaseResponse<List<Teacher>> findAll(@RequestParam(defaultValue = " ") String name){
         if(name == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        List<Result> ResultList = resultService.findAll(name);
-        if (ResultList == null){
+        List<Teacher> teacherList = teacherService.findAll(name);
+        if (teacherList == null){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR);
         }
-        return ResultUtil.success(ResultList);
+        return ResultUtil.success(teacherList);
     }
     /**
      * 删除数据
@@ -97,7 +74,7 @@ public class ResultController {
         if (id <=0 ){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        boolean removeById = resultService.removeById(id);
+        boolean removeById = teacherService.removeById(id);
         if (!removeById){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"删除失败");
         }
@@ -114,7 +91,7 @@ public class ResultController {
         if (ids == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        boolean removeBatchByIds = resultService.removeBatchByIds(ids);
+        boolean removeBatchByIds = teacherService.removeBatchByIds(ids);
         if (!removeBatchByIds){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"删除失败");
         }
@@ -122,16 +99,33 @@ public class ResultController {
     }
 
     /**
-     * 修改测评结果
-     * @param Result
+     * 添加题目
+     * @param Teacher
+     * @return
+     */
+    @PostMapping("/save")
+    public BaseResponse<Integer> addTeacher(@RequestBody Teacher Teacher){
+        if (Teacher == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Integer integer = teacherService.addTeacher(Teacher);
+        if (integer < 0){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"添加失败");
+        }
+        return ResultUtil.success(integer);
+    }
+
+    /**
+     * 修改菜单
+     * @param Teacher
      * @return
      */
     @PostMapping("/edit")
-    public BaseResponse<Integer> EditResult(@RequestBody Result Result){
-        if (Result == null){
+    public BaseResponse<Integer> EditTeacher(@RequestBody Teacher Teacher){
+        if (Teacher == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        Integer integer = resultService.editResult(Result);
+        Integer integer = teacherService.editTeacher(Teacher);
         if (integer < 0){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"修改失败");
         }

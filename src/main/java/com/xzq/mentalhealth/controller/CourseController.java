@@ -1,17 +1,13 @@
 package com.xzq.mentalhealth.controller;
 
 
-import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xzq.mentalhealth.common.BaseResponse;
 import com.xzq.mentalhealth.common.ErrorCode;
 import com.xzq.mentalhealth.common.ResultUtil;
-import com.xzq.mentalhealth.config.AuthAccess;
 import com.xzq.mentalhealth.exception.BusinessException;
-import com.xzq.mentalhealth.model.dto.ResultDTO;
-import com.xzq.mentalhealth.model.entity.Result;
-import com.xzq.mentalhealth.model.vo.ResultVO;
-import com.xzq.mentalhealth.service.ResultService;
+import com.xzq.mentalhealth.model.entity.Course;
+import com.xzq.mentalhealth.service.CourseService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,73 +15,58 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 测评问卷接口
+ * 课程接口
  */
-@Api(tags = "测评结果模块")
+@Api(tags = "课程模块")
 @RestController
-@RequestMapping("/result")
-public class ResultController {
-
-
+@RequestMapping("/course")
+public class CourseController {
 
     @Autowired
-    private ResultService resultService;
+    private CourseService courseService;
+
 
     /**
-     * 通过比对学生提交的问卷得出结果
-     * @param resultDTO
-     * @return
-     */
-    @PostMapping("/addStuQuestions")
-    public BaseResponse<ResultVO> addStuResult(@RequestBody ResultDTO resultDTO){
-        if (CollUtil.isEmpty(resultDTO.getAddQuestion())){
-            throw new BusinessException(ErrorCode.NULL_ERROR);
-        }
-        ResultVO resultVO = resultService.addStuResult(resultDTO);
-        if (resultVO == null){
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"提交的问卷信息有误");
-        }
-        return ResultUtil.success(resultVO);
-
-    }
-
-    /**
-     * 分页查询结果
+     * 分页查询
      * @param pageNum
      * @param pageSize
-     * @param name
+     * @param teacherId
+     * @param title
      * @return
      */
     @GetMapping("/page")
-    public BaseResponse<Page<Result>> pageResult(@RequestParam long pageNum,
-                                               @RequestParam long pageSize,
-                                               @RequestParam(defaultValue = "") String name) {
+    public BaseResponse<Page<Course>> pageQuestion(@RequestParam long pageNum,
+                                                   @RequestParam long pageSize,
+                                                   @RequestParam(defaultValue = "-1")long teacherId,
+                                                   @RequestParam(defaultValue = "") String title) {
         if (pageNum < 0 && pageSize<0){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        Page<Result> resultPage = resultService.resultList(pageNum, pageSize, name);
-        if (resultPage == null){
+
+
+        Page<Course> courseList = courseService.courseList(pageNum, pageSize, teacherId,title);
+        if (courseList == null){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR);
         }
 
-        return ResultUtil.success(resultPage);
+        return ResultUtil.success(courseList);
     }
+
     /**
-     * 查看测评结果
-     * @param name
+     * 查看测评题目列表
+     * @param title
      * @return
      */
-    @AuthAccess
     @GetMapping("/findAll")
-    public BaseResponse<List<Result>> findAll(@RequestParam(defaultValue = " ") String name){
-        if(name == null){
+    public BaseResponse<List<Course>> findAll(@RequestParam(defaultValue = " ") String title){
+        if(title == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        List<Result> ResultList = resultService.findAll(name);
-        if (ResultList == null){
+        List<Course> courseList = courseService.findAll(title);
+        if (courseList == null){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR);
         }
-        return ResultUtil.success(ResultList);
+        return ResultUtil.success(courseList);
     }
     /**
      * 删除数据
@@ -97,7 +78,7 @@ public class ResultController {
         if (id <=0 ){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        boolean removeById = resultService.removeById(id);
+        boolean removeById = courseService.removeById(id);
         if (!removeById){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"删除失败");
         }
@@ -114,7 +95,7 @@ public class ResultController {
         if (ids == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        boolean removeBatchByIds = resultService.removeBatchByIds(ids);
+        boolean removeBatchByIds = courseService.removeBatchByIds(ids);
         if (!removeBatchByIds){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"删除失败");
         }
@@ -122,16 +103,33 @@ public class ResultController {
     }
 
     /**
-     * 修改测评结果
-     * @param Result
+     * 添加题目
+     * @param course
+     * @return
+     */
+    @PostMapping("/save")
+    public BaseResponse<Integer> addQuestion(@RequestBody Course course){
+        if (course == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Integer integer = courseService.addCourse(course);
+        if (integer < 0){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"添加失败");
+        }
+        return ResultUtil.success(integer);
+    }
+
+    /**
+     * 修改菜单
+     * @param course
      * @return
      */
     @PostMapping("/edit")
-    public BaseResponse<Integer> EditResult(@RequestBody Result Result){
-        if (Result == null){
+    public BaseResponse<Integer> EditQuestion(@RequestBody Course course){
+        if (course == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        Integer integer = resultService.editResult(Result);
+        Integer integer = courseService.editCourse(course);
         if (integer < 0){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"修改失败");
         }

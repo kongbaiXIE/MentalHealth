@@ -37,13 +37,13 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
      */
     @Override
     public Page<Question> QuestionList(long pageNum, long pageSize, String name) {
-        Page<Question> userPage = new Page<>(pageNum, pageSize);
-        QueryWrapper<Question> userQueryWrapper = new QueryWrapper<>();
-        userQueryWrapper.orderByAsc("id");
+        Page<Question> questionPage = new Page<>(pageNum, pageSize);
+        QueryWrapper<Question> questionQueryWrapper = new QueryWrapper<>();
+        questionQueryWrapper.orderByAsc("id");
         if (!"".equals(name)) {
-            userQueryWrapper.like("name", name);
+            questionQueryWrapper.like("name", name);
         }
-        return questionMapper.selectPage(userPage, userQueryWrapper);
+        return questionMapper.selectPage(questionPage, questionQueryWrapper);
     }
 
     @Override

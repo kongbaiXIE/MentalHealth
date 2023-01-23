@@ -8,10 +8,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xzq.mentalhealth.common.ErrorCode;
 import com.xzq.mentalhealth.exception.BusinessException;
 import com.xzq.mentalhealth.mapper.PaperMapper;
+import com.xzq.mentalhealth.mapper.UserMapper;
 import com.xzq.mentalhealth.model.dto.ResultDTO;
 import com.xzq.mentalhealth.model.entity.Paper;
 import com.xzq.mentalhealth.model.entity.Question;
 import com.xzq.mentalhealth.model.entity.Result;
+import com.xzq.mentalhealth.model.entity.User;
 import com.xzq.mentalhealth.model.vo.ResultVO;
 import com.xzq.mentalhealth.service.PaperService;
 import com.xzq.mentalhealth.service.ResultService;
@@ -36,6 +38,8 @@ public class ResultServiceImpl extends ServiceImpl<ResultMapper, Result>
     PaperService paperService;
     @Resource
     PaperMapper paperMapper;
+    @Resource
+    UserMapper userMapper;
     @Override
     public Page<Result> resultList(long pageNum, long pageSize, String name) {
         Page<Result> resultPage = new Page<>(pageNum, pageSize);
@@ -44,7 +48,17 @@ public class ResultServiceImpl extends ServiceImpl<ResultMapper, Result>
         if (!"".equals(name)) {
             resultQueryWrapper.like("name", name);
         }
-        return resultMapper.selectPage(resultPage, resultQueryWrapper);
+        Page<Result> resultPage1 = resultMapper.selectPage(resultPage, resultQueryWrapper);
+        List<Result> resultList = resultPage1.getRecords();
+        //todo 通过result中的userId查询出对应的username
+        for (Result result : resultList) {
+            Long userId = result.getUserId();
+            User user = userMapper.selectById(userId);
+            result.setUsername(user.getUsername());
+        }
+        resultPage1.setRecords(resultList);
+
+        return resultPage1;
     }
 
     @Override
@@ -74,6 +88,7 @@ public class ResultServiceImpl extends ServiceImpl<ResultMapper, Result>
         //todo 防止重复添加相同的问卷 在创建之前删除
         UpdateWrapper<Result> resultUpdateWrapper = new UpdateWrapper<>();
         resultUpdateWrapper.eq("userId",userId);
+        resultUpdateWrapper.eq("paperId",paperId);
         int delete = resultMapper.delete(resultUpdateWrapper);
         if (delete <0){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR);
