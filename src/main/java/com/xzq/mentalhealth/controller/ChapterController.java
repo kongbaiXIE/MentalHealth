@@ -1,12 +1,15 @@
 package com.xzq.mentalhealth.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xzq.mentalhealth.common.BaseResponse;
 import com.xzq.mentalhealth.common.ErrorCode;
 import com.xzq.mentalhealth.common.ResultUtil;
 import com.xzq.mentalhealth.exception.BusinessException;
 import com.xzq.mentalhealth.model.entity.Chapter;
-import com.xzq.mentalhealth.model.vo.ChapterVo;
+import com.xzq.mentalhealth.model.entity.Video;
+import com.xzq.mentalhealth.model.vo.ChapterVO;
 import com.xzq.mentalhealth.service.ChapterService;
+import com.xzq.mentalhealth.service.VideoService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,19 +26,35 @@ import java.util.List;
 public class ChapterController {
     @Autowired
     private ChapterService chapterService;
+    @Autowired
+    private VideoService videoService;
 
     //课程大纲列表,根据课程id进行查询
     @GetMapping("/getChapterVideo/{courseId}")
-    private BaseResponse<List<ChapterVo>> getChapterVideo(@PathVariable long courseId){
+    private BaseResponse<List<ChapterVO>> getChapterVideo(@PathVariable long courseId){
         if (courseId < 0){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        List<ChapterVo> chapterVideo = chapterService.getChapterVideo(courseId);
+        List<ChapterVO> chapterVideo = chapterService.getChapterVideo(courseId);
 
         if (chapterVideo == null){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR);
         }
         return ResultUtil.success(chapterVideo);
+    }
+
+    /**
+     * 根据id查询章节数据
+     * @param chapterId
+     * @return
+     */
+    @GetMapping("/{chapterId}")
+    private BaseResponse<Chapter> getChapterById(@PathVariable long chapterId){
+        if (chapterId < 0){
+            throw new BusinessException(ErrorCode.NULL_ERROR);
+        }
+        Chapter chapterById = chapterService.getById(chapterId);
+        return ResultUtil.success(chapterById);
     }
 
     /**
@@ -48,6 +67,9 @@ public class ChapterController {
         if (id <=0 ){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+        QueryWrapper<Video> videoQueryWrapper = new QueryWrapper<>();
+        videoQueryWrapper.eq("chapterId",id);
+        videoService.remove(videoQueryWrapper);
         boolean removeById = chapterService.removeById(id);
         if (!removeById){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"删除失败");

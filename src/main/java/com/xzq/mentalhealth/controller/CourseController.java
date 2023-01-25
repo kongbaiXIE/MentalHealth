@@ -24,8 +24,6 @@ public class CourseController {
 
     @Autowired
     private CourseService courseService;
-
-
     /**
      * 分页查询
      * @param pageNum
@@ -69,7 +67,7 @@ public class CourseController {
         return ResultUtil.success(courseList);
     }
     /**
-     * 删除数据
+     * 课程关联了章节和小节表所以删除需要全部删除
      * @param id
      * @return
      */
@@ -78,7 +76,7 @@ public class CourseController {
         if (id <=0 ){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        boolean removeById = courseService.removeById(id);
+        boolean removeById = courseService.removeByAlls(id);
         if (!removeById){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"删除失败");
         }
@@ -108,15 +106,15 @@ public class CourseController {
      * @return
      */
     @PostMapping("/save")
-    public BaseResponse<Integer> addQuestion(@RequestBody Course course){
+    public BaseResponse<Long> addQuestion(@RequestBody Course course){
         if (course == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        Integer integer = courseService.addCourse(course);
-        if (integer < 0){
+        Long courseId = courseService.addCourse(course);
+        if (courseId < 0){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"添加失败");
         }
-        return ResultUtil.success(integer);
+        return ResultUtil.success(courseId);
     }
 
     /**
@@ -136,5 +134,40 @@ public class CourseController {
         return ResultUtil.success(integer);
     }
 
+    /**
+     * 根据courseId查询出相关的课程信息
+     * @param courseId
+     * @return
+     */
+    @GetMapping("/getCoursePublish/{courseId}")
+    public BaseResponse<Course> getCoursePublish(@PathVariable long courseId){
+        if (courseId<0){
+            throw new BusinessException(ErrorCode.NULL_ERROR);
+        }
+        Course coursePublish = courseService.getCoursePublish(courseId);
 
+        if (coursePublish == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        return ResultUtil.success(coursePublish);
+    }
+
+    /**
+     * 根据课程id更新课程状态
+     * @param courseId
+     * @return
+     */
+    @GetMapping("/updateCourserStatus/{courseId}")
+    public BaseResponse<Integer> updateCourseStatus(@PathVariable long courseId){
+        if (courseId < 0){
+            throw new BusinessException(ErrorCode.NULL_ERROR);
+        }
+        Course courseById = courseService.getById(courseId);
+        if (courseById == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"没有找到该课程");
+        }
+        courseById.setStatus("1");
+        courseService.updateById(courseById);
+        return ResultUtil.success(1);
+    }
 }

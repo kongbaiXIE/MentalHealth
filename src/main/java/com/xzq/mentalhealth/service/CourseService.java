@@ -17,7 +17,11 @@ public interface CourseService extends IService<Course> {
 
     List<Course> findAll(String title);
 
-    Integer addCourse(Course course);
+    Long addCourse(Course course);
 
     Integer editCourse(Course course);
+
+    Course getCoursePublish(long courseId);
+
+    boolean removeByAlls(long id);
 }

@@ -7,8 +7,8 @@ import com.xzq.mentalhealth.exception.BusinessException;
 import com.xzq.mentalhealth.mapper.VideoMapper;
 import com.xzq.mentalhealth.model.entity.Chapter;
 import com.xzq.mentalhealth.model.entity.Video;
-import com.xzq.mentalhealth.model.vo.ChapterVo;
-import com.xzq.mentalhealth.model.vo.VideoVo;
+import com.xzq.mentalhealth.model.vo.ChapterVO;
+import com.xzq.mentalhealth.model.vo.VideoVO;
 import com.xzq.mentalhealth.service.ChapterService;
 import com.xzq.mentalhealth.mapper.ChapterMapper;
 import org.springframework.beans.BeanUtils;
@@ -62,7 +62,7 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter>
      * @return
      */
     @Override
-    public List<ChapterVo> getChapterVideo(long courseId) {
+    public List<ChapterVO> getChapterVideo(long courseId) {
         //根据课程id查询出对应的章节信息
         QueryWrapper<Chapter> chapterQueryWrapper = new QueryWrapper<>();
         chapterQueryWrapper.eq("courseId",courseId);
@@ -72,37 +72,37 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter>
         videoQueryWrapper.eq("courseId",courseId);
         List<Video> videoList = videoMapper.selectList(videoQueryWrapper);
         //创建一个list集合，用于封装数据
-        List<ChapterVo> chapterVoList = new ArrayList<>();
+        List<ChapterVO> chapterVOList = new ArrayList<>();
 
         //遍历查询章节list集合进行封装
         //遍历查询章节list集合
         for (Chapter chapter : chapterList) {
             //每个章节
             //Chapter对象值复制到ChapterVo里面
-            ChapterVo chapterVo = new ChapterVo();
+            ChapterVO chapterVo = new ChapterVO();
             BeanUtils.copyProperties(chapter, chapterVo);
             //把chapterVo放到最终list集合
-            chapterVoList.add(chapterVo);
+            chapterVOList.add(chapterVo);
 
             //创建集合，用于封装章节的小节
-            List<VideoVo> videoVoList = new ArrayList<>();
+            List<VideoVO> videoVOList = new ArrayList<>();
 
             //4 遍历查询小节list集合，进行封装
             for (Video video : videoList) {
                 //得到每个小节
-                //判断：小节里面chapterid和章节里面id是否一样
+                //判断：小节里面chapterId和章节里面id是否一样
                 if (video.getChapterId().equals(chapter.getId())) {
                     //进行封装
-                    VideoVo videoVo = new VideoVo();
+                    VideoVO videoVo = new VideoVO();
                     BeanUtils.copyProperties(video, videoVo);
                     //放到小节封装集合
-                    videoVoList.add(videoVo);
+                    videoVOList.add(videoVo);
                 }
             }
             //把封装之后小节list集合，放到章节对象里面
-            chapterVo.setChildren(videoVoList);
+            chapterVo.setChildren(videoVOList);
         }
-        return chapterVoList;
+        return chapterVOList;
     }
 
 }

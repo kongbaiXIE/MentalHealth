@@ -2,7 +2,7 @@ package com.xzq.mentalhealth.service;
 
 import com.xzq.mentalhealth.model.entity.Chapter;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.xzq.mentalhealth.model.vo.ChapterVo;
+import com.xzq.mentalhealth.model.vo.ChapterVO;
 
 import java.util.List;
 
@@ -17,5 +17,5 @@ public interface ChapterService extends IService<Chapter> {
 
     Integer editChapter(Chapter chapter);
 
-    List<ChapterVo> getChapterVideo(long courseId);
+    List<ChapterVO> getChapterVideo(long courseId);
 }

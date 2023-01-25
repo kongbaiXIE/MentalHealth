@@ -3,9 +3,9 @@ package com.xzq.mentalhealth.model.vo;
 import lombok.Data;
 
 @Data
-public class VideoVo {
+public class VideoVO {
 
-    private String id;
+    private Long id;
 
     private String title;
 

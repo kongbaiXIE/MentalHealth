@@ -80,7 +80,7 @@ public class Course implements Serializable {
     /**
      * 课程状态 Draft未发布  Normal已发布
      */
-    private String statue;
+    private String status;
 
     /**
      * 创建时间

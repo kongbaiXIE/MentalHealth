@@ -16,7 +16,7 @@
             <result property="buyCount" column="buyCount" jdbcType="BIGINT"/>
             <result property="viewCount" column="viewCount" jdbcType="BIGINT"/>
             <result property="version" column="version" jdbcType="BIGINT"/>
-            <result property="statue" column="statue" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
             <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
@@ -26,7 +26,7 @@
         id,subjectId,subjectPid,
         title,description,price,
         lessonNum,cover,buyCount,
-        viewCount,version,statue,
+        viewCount,version,status,
         createTime,updateTime,isDelete
     </sql>
 </mapper>

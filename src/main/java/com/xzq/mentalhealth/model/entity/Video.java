@@ -37,14 +37,9 @@ public class Video implements Serializable {
     private String title;
 
     /**
-     * 云端视频资源
+     * 课程视频本地路径
      */
-    private String video_source_id;
-
-    /**
-     * 原始文件名称
-     */
-    private String video_original_name;
+    private String videoUrl;
 
     /**
      * 播放次数
@@ -54,22 +49,7 @@ public class Video implements Serializable {
     /**
      * 是否可以试听：0收费 1免费
      */
-    private Long is_free;
-
-    /**
-     * 视频时长（秒）
-     */
-    private Double duration;
-
-    /**
-     * Empty未上传 Transcoding转码中  Normal正常
-     */
-    private String status;
-
-    /**
-     * 视频源文件大小（字节）
-     */
-    private Long size;
+    private Long isFree;
 
     /**
      * 乐观锁

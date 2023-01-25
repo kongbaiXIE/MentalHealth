@@ -6,19 +6,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xzq.mentalhealth.common.ErrorCode;
 import com.xzq.mentalhealth.exception.BusinessException;
-import com.xzq.mentalhealth.mapper.SubjectMapper;
-import com.xzq.mentalhealth.mapper.TeacherMapper;
-import com.xzq.mentalhealth.model.entity.Course;
-import com.xzq.mentalhealth.model.entity.Subject;
-import com.xzq.mentalhealth.model.entity.Teacher;
+import com.xzq.mentalhealth.mapper.*;
+import com.xzq.mentalhealth.model.entity.*;
 import com.xzq.mentalhealth.service.CourseService;
-import com.xzq.mentalhealth.mapper.CourseMapper;
-import com.xzq.mentalhealth.untils.TokenUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Objects;
+
 
 /**
 * @author 谢志强
@@ -35,7 +30,10 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>
     TeacherMapper teacherMapper;
     @Resource
     SubjectMapper subjectMapper;
-
+    @Resource
+    ChapterMapper chapterMapper;
+    @Resource
+    VideoMapper videoMapper;
     /**
      * 分页查询
      * @param pageNum
@@ -49,7 +47,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>
         Page<Course> coursePage = new Page<>(pageNum, pageSize);
         //封装条件
         QueryWrapper<Course> wrapper = new QueryWrapper<>();
-
+        wrapper.orderByDesc("createTime");
         if(!StrUtil.isEmpty(title)) {
             wrapper.like("title",title);
         }
@@ -100,7 +98,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>
      * @return
      */
     @Override
-    public Integer addCourse(Course course) {
+    public Long addCourse(Course course) {
         String title = course.getTitle();
         QueryWrapper<Course> courseQueryWrapper = new QueryWrapper<>();
         courseQueryWrapper.eq("title",title);
@@ -112,8 +110,12 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>
         if (title == null) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "课程名不能为空");
         }
-
-        return courseMapper.insert(course);
+        if (courseMapper.insert(course)<0){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        //将添加的课程id返回
+        Course courseById = courseMapper.selectOne(courseQueryWrapper);
+        return courseById.getId();
     }
     /**
      * 修改课程
@@ -123,6 +125,56 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>
     @Override
     public Integer editCourse(Course course) {
         return courseMapper.updateById(course);
+    }
+
+    /**
+     * 查询课程相关信息
+     * @param courseId
+     * @return
+     */
+    @Override
+    public Course getCoursePublish(long courseId) {
+        Course course = courseMapper.selectById(courseId);
+        Long teacherId = course.getTeacherId();
+        Long subjectId = course.getSubjectId();
+        Long subjectPid = course.getSubjectPid();
+        Teacher teacher1 = teacherMapper.selectById(teacherId);
+        if (teacher1!=null){
+            course.setTeacherName(teacher1.getName());
+        }
+        //查询分类名称
+        Subject subjectOne = subjectMapper.selectById(subjectPid);
+        if (subjectOne!=null){
+            course.setSubjectParentTitle(subjectOne.getTitle());
+        }
+        Subject subjectTwo = subjectMapper.selectById(subjectId);
+        if (subjectTwo!=null){
+            course.setSubjectTitle(subjectTwo.getTitle());
+        }
+
+        return course;
+    }
+
+    /**
+     * 课程关联了章节和小节表所以删除需要全部删除
+     * @param id
+     * @return
+     */
+    @Override
+    public boolean removeByAlls(long id) {
+        //根据课程id删除对应的章节数据
+        QueryWrapper<Chapter> chapterQueryWrapper = new QueryWrapper<>();
+        chapterQueryWrapper.eq("courseId",id);
+        chapterMapper.delete(chapterQueryWrapper);
+        //根据课程id删除对应小节数据
+        QueryWrapper<Video> videoQueryWrapper = new QueryWrapper<>();
+        videoQueryWrapper.eq("courseId",id);
+        videoMapper.delete(videoQueryWrapper);
+        int i = courseMapper.deleteById(id);
+        if (i<0){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"删除失败");
+        }
+        return true;
     }
 }
 

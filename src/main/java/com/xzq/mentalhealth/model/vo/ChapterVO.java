@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class ChapterVo {
+public class ChapterVO {
 
-    private String id;
+    private Long id;
 
     private String title;
 
     //表示小节
-    private List<VideoVo> children = new ArrayList<>();
+    private List<VideoVO> children = new ArrayList<>();
 }
