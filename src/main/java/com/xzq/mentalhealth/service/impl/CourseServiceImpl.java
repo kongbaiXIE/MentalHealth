@@ -8,7 +8,10 @@ import com.xzq.mentalhealth.common.ErrorCode;
 import com.xzq.mentalhealth.exception.BusinessException;
 import com.xzq.mentalhealth.mapper.*;
 import com.xzq.mentalhealth.model.entity.*;
+import com.xzq.mentalhealth.model.vo.CourseFrontVO;
 import com.xzq.mentalhealth.service.CourseService;
+import com.xzq.mentalhealth.untils.TokenUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -34,6 +37,8 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>
     ChapterMapper chapterMapper;
     @Resource
     VideoMapper videoMapper;
+    @Resource
+    OrdersMapper ordersMapper;
     /**
      * 分页查询
      * @param pageNum
@@ -175,6 +180,78 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"删除失败");
         }
         return true;
+    }
+
+    /**
+     * 根据课程id查询出前端需要的课程数据
+     * @param courseId
+     * @return
+     */
+    @Override
+    public CourseFrontVO getFrontCourseInfo(long courseId) {
+        Course course = courseMapper.selectById(courseId);
+        Long teacherId = course.getTeacherId();
+        CourseFrontVO courseFrontVO = new CourseFrontVO();
+        Teacher teacher1 = teacherMapper.selectById(teacherId);
+        if (teacher1!=null){
+            course.setTeacherName(teacher1.getName());
+            courseFrontVO.setAvatar(teacher1.getAvatar());
+        }
+        //判断用户是否已经购买该课程
+        User user = TokenUtils.getUser();
+        if (user == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        //通过课程id 和 用户id 查询
+        QueryWrapper<Orders> ordersQueryWrapper = new QueryWrapper<>();
+        ordersQueryWrapper.eq("userId",user.getId());
+        ordersQueryWrapper.eq("courseId",course.getId());
+        //查询该用户对应该课程id
+        Orders orders = ordersMapper.selectOne(ordersQueryWrapper);
+        if (orders != null){
+            Integer status = orders.getStatus();
+            courseFrontVO.setBuyCourse(status == 1);
+        }
+        //获取用户章节和小节标题
+        Subject subjectOne = subjectMapper.selectById(course.getSubjectPid());
+        if (subjectOne!=null){
+            course.setSubjectParentTitle(subjectOne.getTitle());
+        }
+        Subject subjectTwo = subjectMapper.selectById(course.getSubjectId());
+        if (subjectTwo!=null){
+            course.setSubjectTitle(subjectTwo.getTitle());
+        }
+        BeanUtils.copyProperties(course,courseFrontVO);
+
+        return courseFrontVO;
+    }
+
+    /**
+     * 分页前端查询
+     * @param pageNum
+     * @param pageSize
+     * @param title
+     * @param subjectId
+     * @param subjectPid
+     * @return
+     */
+    @Override
+    public Page<Course> courseFrontList(long pageNum, long pageSize, String title,long subjectId,long subjectPid) {
+
+        Page<Course> coursePage = new Page<>(pageNum, pageSize);
+        //封装条件
+        QueryWrapper<Course> wrapper = new QueryWrapper<>();
+        if(!StrUtil.isEmpty(title)) {
+            wrapper.like("title",title);
+        }
+        if(subjectId > 0){
+            wrapper.eq("subjectId",subjectId);
+        }
+        if(subjectPid > 0){
+            wrapper.eq("subjectPid",subjectPid);
+        }
+        Page<Course> selectPage = courseMapper.selectPage(coursePage, wrapper);
+        return selectPage;
     }
 }
 

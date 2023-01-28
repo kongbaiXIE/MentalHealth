@@ -9,5 +9,7 @@ public class VideoVO {
 
     private String title;
 
-    private String videoSourceId;//视频id
+    private String videoUrl;//视频id
+
+    private Long isFree;
 }

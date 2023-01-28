@@ -11,7 +11,6 @@
             <result property="size" column="size" jdbcType="BIGINT"/>
             <result property="url" column="url" jdbcType="VARCHAR"/>
             <result property="md5" column="md5" jdbcType="VARCHAR"/>
-            <result property="userStatus" column="userStatus" jdbcType="INTEGER"/>
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
             <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
@@ -20,7 +19,7 @@
     <sql id="Base_Column_List">
         id,name,type,
         size,url,md5,
-        userStatus,createTime,updateTime,
+        createTime,updateTime,
         isDelete
     </sql>
 </mapper>

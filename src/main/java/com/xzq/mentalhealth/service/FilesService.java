@@ -1,5 +1,6 @@
 package com.xzq.mentalhealth.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xzq.mentalhealth.model.entity.Files;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,4 +18,8 @@ public interface FilesService extends IService<Files> {
     String uploadFile(MultipartFile file) throws IOException;
 
     void downloadFiles(String fileUUID, HttpServletResponse response) throws IOException;
+
+    Page<Files> fileList(long pageNum, long pageSize, String name);
+
+    Integer editFile(Files file);
 }

@@ -60,6 +60,7 @@ public class CorsConfig implements WebMvcConfigurer {
         excludePath.add("/SwaggerModels/**");
         excludePath.add("/v3/api-docs/**");
         excludePath.add("/files/**");
+        excludePath.add("/alipay/**");
         registry.addInterceptor(jwtInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns(excludePath);

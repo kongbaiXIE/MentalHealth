@@ -5,10 +5,13 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xzq.mentalhealth.common.ErrorCode;
 import com.xzq.mentalhealth.exception.BusinessException;
+import com.xzq.mentalhealth.model.entity.Course;
 import com.xzq.mentalhealth.model.entity.Files;
+import com.xzq.mentalhealth.model.entity.Teacher;
 import com.xzq.mentalhealth.service.FilesService;
 import com.xzq.mentalhealth.mapper.FilesMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,7 +75,7 @@ public class FilesServiceImpl extends ServiceImpl<FilesMapper, Files>
             //上传文件到本地磁盘
             file.transferTo(uploadFile);
             //如果数据库不存在重复文件,则不删除刚才上传的文件
-            url = "http://" +serverIp+":8080/files/"+fileUUID;
+            url = "http://" +serverIp+":9000/files/"+fileUUID;
         }
         //存储数据库
         Files saveFiles = new Files();
@@ -106,6 +109,34 @@ public class FilesServiceImpl extends ServiceImpl<FilesMapper, Files>
         os.write(FileUtil.readBytes(downloadFiles));
         os.flush();
         os.close();
+    }
+
+    /**
+     * 分页查询
+     * @param pageNum
+     * @param pageSize
+     * @param name
+     * @return
+     */
+    @Override
+    public Page<Files> fileList(long pageNum, long pageSize, String name) {
+        Page<Files> filesPage = new Page<>(pageNum, pageSize);
+        QueryWrapper<Files> filesQueryWrapper = new QueryWrapper<>();
+        filesQueryWrapper.orderByAsc("createTime");
+        if (!"".equals(name)) {
+            filesQueryWrapper.like("name", name);
+        }
+        return filesMapper.selectPage(filesPage, filesQueryWrapper);
+    }
+
+    /**
+     * 修改文件
+     * @param file
+     * @return
+     */
+    @Override
+    public Integer editFile(Files file) {
+        return filesMapper.updateById(file);
     }
 
     /**

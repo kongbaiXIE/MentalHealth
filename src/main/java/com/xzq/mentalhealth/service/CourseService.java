@@ -3,6 +3,7 @@ package com.xzq.mentalhealth.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xzq.mentalhealth.model.entity.Course;
+import com.xzq.mentalhealth.model.vo.CourseFrontVO;
 
 import java.util.List;
 
@@ -24,4 +25,8 @@ public interface CourseService extends IService<Course> {
     Course getCoursePublish(long courseId);
 
     boolean removeByAlls(long id);
+
+    CourseFrontVO getFrontCourseInfo(long courseId);
+
+    Page<Course> courseFrontList(long pageNum, long pageSize, String title,long subjectId,long subjectPid);
 }

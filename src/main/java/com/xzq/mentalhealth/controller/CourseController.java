@@ -7,6 +7,7 @@ import com.xzq.mentalhealth.common.ErrorCode;
 import com.xzq.mentalhealth.common.ResultUtil;
 import com.xzq.mentalhealth.exception.BusinessException;
 import com.xzq.mentalhealth.model.entity.Course;
+import com.xzq.mentalhealth.model.vo.CourseFrontVO;
 import com.xzq.mentalhealth.service.CourseService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class CourseController {
      * @return
      */
     @GetMapping("/page")
-    public BaseResponse<Page<Course>> pageQuestion(@RequestParam long pageNum,
+    public BaseResponse<Page<Course>> pageCourse(@RequestParam long pageNum,
                                                    @RequestParam long pageSize,
                                                    @RequestParam(defaultValue = "-1")long teacherId,
                                                    @RequestParam(defaultValue = "") String title) {
@@ -169,5 +170,47 @@ public class CourseController {
         courseById.setStatus("1");
         courseService.updateById(courseById);
         return ResultUtil.success(1);
+    }
+
+    /**
+     * 放回响应给前端的课程信息数据
+     * @param courseId
+     * @return
+     */
+    @GetMapping("/getFrontCourseInfo/{courseId}")
+    public BaseResponse<CourseFrontVO> getFrontCourseInfo(@PathVariable long courseId){
+        if (courseId<0){
+            throw new BusinessException(ErrorCode.NULL_ERROR);
+        }
+        CourseFrontVO frontCourseInfo = courseService.getFrontCourseInfo(courseId);
+
+        if (frontCourseInfo == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        return ResultUtil.success(frontCourseInfo);
+    }
+
+    /**
+     * 前台分页查询
+     * @param pageNum
+     * @param pageSize
+     * @param subjectPid
+     * @param subjectId
+     * @return
+     */
+    @GetMapping ("/front/page")
+    public BaseResponse<Page<Course>> pageCourseFront(@RequestParam long pageNum,
+                                                      @RequestParam long pageSize,
+                                                      @RequestParam(defaultValue = "-1")long subjectPid,
+                                                      @RequestParam(defaultValue = "-1")long subjectId,
+                                                      @RequestParam(defaultValue = "") String title){
+        if (pageNum < 0 && pageSize<0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Page<Course> coursePage = courseService.courseFrontList(pageNum, pageSize, title,subjectId,subjectPid);
+        if (coursePage == null){
+                throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+            }
+        return ResultUtil.success(coursePage);
     }
 }

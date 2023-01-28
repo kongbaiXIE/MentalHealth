@@ -25,7 +25,7 @@ import java.util.List;
 @Api(tags = "测评类型模块")
 @RestController
 @RequestMapping("/paper")
-public class PagerController {
+public class PaperController {
 
     @Autowired
     private PaperService paperService;
