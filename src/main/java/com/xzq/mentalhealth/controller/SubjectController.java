@@ -80,7 +80,7 @@ public class SubjectController {
      * @return
      */
     @PostMapping("/save")
-    public BaseResponse<Integer> addMenu(@RequestBody Subject subject){
+    public BaseResponse<Integer> addSubject(@RequestBody Subject subject){
         if (subject == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -97,7 +97,7 @@ public class SubjectController {
      * @return
      */
     @PostMapping("/edit")
-    public BaseResponse<Integer> EditMenu(@RequestBody Subject subject){
+    public BaseResponse<Integer> editSubject(@RequestBody Subject subject){
         if (subject == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }

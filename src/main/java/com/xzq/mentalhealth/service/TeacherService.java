@@ -3,6 +3,7 @@ package com.xzq.mentalhealth.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xzq.mentalhealth.model.entity.Teacher;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.xzq.mentalhealth.model.vo.TeacherFrontVO;
 import io.swagger.models.auth.In;
 
 import java.util.List;
@@ -21,4 +22,6 @@ public interface TeacherService extends IService<Teacher> {
     Integer addTeacher(Teacher teacher);
 
     Integer editTeacher(Teacher teacher);
+
+    TeacherFrontVO getTeacherFrontInfo(long teacherId);
 }

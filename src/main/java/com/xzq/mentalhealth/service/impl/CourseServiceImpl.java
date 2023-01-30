@@ -40,7 +40,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>
     @Resource
     OrdersMapper ordersMapper;
     /**
-     * 分页查询
+     * 后端分页查询
      * @param pageNum
      * @param pageSize
      * @param teacherId

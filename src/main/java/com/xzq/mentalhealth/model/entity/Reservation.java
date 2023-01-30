@@ -9,47 +9,42 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 咨询师表
- * @TableName teacher
+ * 预约表
+ * @TableName reservation
  */
-@TableName(value ="teacher")
+@TableName(value ="reservation")
 @Data
-public class Teacher implements Serializable {
+public class Reservation implements Serializable {
     /**
-     * id
+     *
      */
     @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
-     * 讲师姓名
+     * 预约用户账号
      */
-    private String name;
+    private String userAccount;
 
     /**
-     * 讲师简介
+     * 预约咨询师名字
      */
-    private String intro;
+    private String teacherName;
 
     /**
-     * 讲师资历,一句话说明讲师
+     * 描述主要预约的问题
      */
-    private String career;
+    private String description;
 
     /**
-     * 头衔 1高级讲师 2首席讲师
+     * 预约咨询时间
      */
-    private Integer level;
+    private Date reservationTime;
 
     /**
-     * 讲师头像
+     * 预约状态（0：预约中 1：预约成功）
      */
-    private String avatar;
-
-    /**
-     * 排序
-     */
-    private Object sort;
+    private Integer reservationStatus;
 
     /**
      * 创建时间
@@ -62,7 +57,7 @@ public class Teacher implements Serializable {
     private Date updateTime;
 
     /**
-     * 逻辑删除 1（true）已删除， 0（false）未删除
+     * 是否删除
      */
     private Integer isDelete;
 

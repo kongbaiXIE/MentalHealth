@@ -102,12 +102,12 @@ public class CourseController {
     }
 
     /**
-     * 添加题目
+     * 添加课程
      * @param course
      * @return
      */
     @PostMapping("/save")
-    public BaseResponse<Long> addQuestion(@RequestBody Course course){
+    public BaseResponse<Long> addCourse(@RequestBody Course course){
         if (course == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -119,12 +119,12 @@ public class CourseController {
     }
 
     /**
-     * 修改菜单
+     * 修改课程
      * @param course
      * @return
      */
     @PostMapping("/edit")
-    public BaseResponse<Integer> EditQuestion(@RequestBody Course course){
+    public BaseResponse<Integer> EditCourse(@RequestBody Course course){
         if (course == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -173,7 +173,7 @@ public class CourseController {
     }
 
     /**
-     * 放回响应给前端的课程信息数据
+     * 返回响应给前端的课程信息数据
      * @param courseId
      * @return
      */
