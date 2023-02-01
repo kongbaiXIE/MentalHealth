@@ -85,14 +85,14 @@ public class ResultServiceImpl extends ServiceImpl<ResultMapper, Result>
     public ResultVO addStuResult(ResultDTO resultDTO) {
         Long paperId = resultDTO.getPaperId();
         Long userId = resultDTO.getUserId();
-        //todo 防止重复添加相同的问卷 在创建之前删除
-        UpdateWrapper<Result> resultUpdateWrapper = new UpdateWrapper<>();
-        resultUpdateWrapper.eq("userId",userId);
-        resultUpdateWrapper.eq("paperId",paperId);
-        int delete = resultMapper.delete(resultUpdateWrapper);
-        if (delete <0){
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
-        }
+        ////todo 防止重复添加相同的问卷 在创建之前删除
+        //UpdateWrapper<Result> resultUpdateWrapper = new UpdateWrapper<>();
+        //resultUpdateWrapper.eq("userId",userId);
+        //resultUpdateWrapper.eq("paperId",paperId);
+        //int delete = resultMapper.delete(resultUpdateWrapper);
+        //if (delete <0){
+        //    throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        //}
         int totalScore = 0;
         //学生提交的问卷
         List<Question> StuQuestions = resultDTO.getAddQuestion();

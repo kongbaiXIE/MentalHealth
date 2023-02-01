@@ -71,12 +71,6 @@ public class Course implements Serializable {
      * 浏览数量
      */
     private Long viewCount;
-
-    /**
-     * 乐观锁
-     */
-    private Long version;
-
     /**
      * 课程状态 Draft未发布  Normal已发布
      */

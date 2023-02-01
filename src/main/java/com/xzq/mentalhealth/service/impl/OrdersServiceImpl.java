@@ -1,6 +1,8 @@
 package com.xzq.mentalhealth.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xzq.mentalhealth.mapper.OrdersMapper;
 import com.xzq.mentalhealth.model.entity.Course;
@@ -12,6 +14,7 @@ import com.xzq.mentalhealth.untils.OrderNoUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
 * @author 谢志强
@@ -68,6 +71,37 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
         ordersQueryWrapper.eq("orderNo",orderNo);
 
         return ordersMapper.selectOne(ordersQueryWrapper);
+    }
+
+    @Override
+    public Page<Orders> ordersList(long pageNum, long pageSize, String teacherName, String userAccount, String courseTitle) {
+        Page<Orders> OrdersPage = new Page<>(pageNum, pageSize);
+        QueryWrapper<Orders> OrdersQueryWrapper = new QueryWrapper<>();
+        OrdersQueryWrapper.orderByAsc("createTime");
+        if (StrUtil.isNotBlank(teacherName)){
+            OrdersQueryWrapper.like("teacherName",teacherName);
+        }
+        if (StrUtil.isNotBlank(userAccount)){
+            OrdersQueryWrapper.like("userAccount",userAccount);
+        }
+        if (StrUtil.isNotBlank(courseTitle)){
+            OrdersQueryWrapper.like("courseTitle",courseTitle);
+        }
+
+        return ordersMapper.selectPage(OrdersPage, OrdersQueryWrapper);
+    }
+
+    @Override
+    public List<Orders> findAll(long userId) {
+        QueryWrapper<Orders> OrdersQueryWrapper = new QueryWrapper<>();
+        OrdersQueryWrapper.eq("userId",userId);
+
+        return ordersMapper.selectList(OrdersQueryWrapper);
+    }
+
+    @Override
+    public Integer editOrders(Orders orders) {
+        return ordersMapper.updateById(orders);
     }
 }
 

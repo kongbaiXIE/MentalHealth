@@ -16,7 +16,7 @@
 
     <sql id="Base_Column_List">
         id,name,score,
-        userId,paperId,createTime,
+        userId,createTime,
         updateTime,isDelete
     </sql>
 </mapper>

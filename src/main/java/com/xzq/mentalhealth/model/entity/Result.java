@@ -24,7 +24,7 @@ public class Result implements Serializable {
     private Long id;
 
     /**
-     * 测评问卷题目
+     * 测评问卷id
      */
     @TableField(value = "name")
     private String name;
@@ -61,6 +61,7 @@ public class Result implements Serializable {
     @TableField(exist = false)
     private String username;
     @TableField(exist = false)
+    private String paperId;
 
     private static final long serialVersionUID = 1L;
 }

@@ -50,12 +50,6 @@ public class Video implements Serializable {
      * 是否可以试听：0收费 1免费
      */
     private Long isFree;
-
-    /**
-     * 乐观锁
-     */
-    private Long version;
-
     /**
      * 排序
      */

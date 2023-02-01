@@ -115,7 +115,7 @@ public class QuestionController {
     }
 
     /**
-     * 修改菜单
+     * 修改题目
      * @param Question
      * @return
      */
