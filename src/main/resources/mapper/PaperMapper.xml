@@ -7,6 +7,7 @@
     <resultMap id="BaseResultMap" type="com.xzq.mentalhealth.model.entity.Paper">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="paperCover" column="paperCover" jdbcType="VARCHAR"/>
             <result property="result" column="result" jdbcType="VARCHAR"/>
             <result property="categoryId" column="categoryId" jdbcType="BIGINT"/>
             <result property="description" column="description" jdbcType="VARCHAR"/>
@@ -16,7 +17,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,name,result,
+        id,name,paperCover,result,
         categoryId,description,createTime,
         updateTime,isDelete
     </sql>

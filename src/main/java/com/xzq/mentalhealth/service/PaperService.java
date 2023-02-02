@@ -27,7 +27,7 @@ public interface PaperService extends IService<Paper> {
     Page<Paper> PaperList(long pageNum, long pageSize, String name);
 
     List<Paper> findAll(String name);
-
+    List<Paper> findAllByLimit(String name);
     Integer addPaper(Paper paper);
 
     Integer editPaper(Paper paper);
@@ -39,4 +39,6 @@ public interface PaperService extends IService<Paper> {
     List<Question> safeViewPaper(Long paperId);
     //手动创建问卷
     Boolean handPaper(HandPaperDTO handPaperDTO);
+
+
 }

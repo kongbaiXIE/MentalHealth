@@ -65,6 +65,15 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper>
 
         return paperMapper.selectList(paperQueryWrapper);
     }
+    @Override
+    public List<Paper> findAllByLimit(String name) {
+        QueryWrapper<Paper> paperQueryWrapper = new QueryWrapper<>();
+        if (StrUtil.isNotBlank(name)){
+            paperQueryWrapper.like("name",name);
+        }
+        paperQueryWrapper.last("limit 8");
+        return paperMapper.selectList(paperQueryWrapper);
+    }
 
     @Override
     public Integer addPaper(Paper paper) {

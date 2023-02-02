@@ -64,7 +64,22 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher>
         if (StrUtil.isNotBlank(name)){
             teacherQueryWrapper.like("name",name);
         }
+        return teacherMapper.selectList(teacherQueryWrapper);
+    }
 
+    /**
+     * 查询讲师列表
+     * @param name
+     * @return
+     */
+    @Override
+    public List<Teacher> findAllByLimit(String name) {
+        QueryWrapper<Teacher> teacherQueryWrapper = new QueryWrapper<>();
+        if (StrUtil.isNotBlank(name)){
+            teacherQueryWrapper.like("name",name);
+        }
+        //使用last方法拼接sql语句
+        teacherQueryWrapper.last("limit 8");
         return teacherMapper.selectList(teacherQueryWrapper);
     }
 

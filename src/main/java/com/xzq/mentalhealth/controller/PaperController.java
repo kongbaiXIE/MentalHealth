@@ -135,6 +135,25 @@ public class PaperController {
         return ResultUtil.success(paperList);
     }
     /**
+     * 查看测评问卷
+     * @param name
+     * @return
+     */
+    @AuthAccess
+    @GetMapping("/findAllByLimit")
+    public BaseResponse<List<Paper>> findAllByLimit(@RequestParam(defaultValue = " ") String name){
+        if(name == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        List<Paper> paperList = paperService.findAllByLimit(name);
+        if (paperList == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        return ResultUtil.success(paperList);
+    }
+
+
+    /**
      * 删除数据
      * @param id
      * @return

@@ -27,7 +27,11 @@ public class Paper implements Serializable {
      */
     @TableField(value = "name")
     private String name;
-
+    /**
+     * 测评问卷解析
+     */
+    @TableField(value = "paperCover")
+    private String paperCover;
     /**
      * 测评问卷解析
      */

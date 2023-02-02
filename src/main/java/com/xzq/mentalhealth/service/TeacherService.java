@@ -18,7 +18,7 @@ public interface TeacherService extends IService<Teacher> {
     Page<Teacher> teacherList(long pageNum, long pageSize, String name, Integer level);
 
     List<Teacher> findAll(String name);
-
+    List<Teacher> findAllByLimit(String name);
     Integer addTeacher(Teacher teacher);
 
     Integer editTeacher(Teacher teacher);

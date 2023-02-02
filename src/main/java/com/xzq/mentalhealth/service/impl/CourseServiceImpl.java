@@ -98,6 +98,21 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>
     }
 
     /**
+     * 返回给前台的课程数据
+     * @param title
+     * @return
+     */
+    @Override
+    public List<Course> findAllByLimit(String title) {
+        QueryWrapper<Course> courseQueryWrapper = new QueryWrapper<>();
+        if (StrUtil.isNotBlank(title)){
+            courseQueryWrapper.like("title",title);
+        }
+        courseQueryWrapper.last("limit 8");
+        return courseMapper.selectList(courseQueryWrapper);
+    }
+
+    /**
      * 添加课程
      * @param course
      * @return

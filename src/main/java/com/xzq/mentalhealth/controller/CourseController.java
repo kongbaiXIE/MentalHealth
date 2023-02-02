@@ -52,7 +52,7 @@ public class CourseController {
     }
 
     /**
-     * 查看测评题目列表
+     * 查看课程列表
      * @param title
      * @return
      */
@@ -62,6 +62,22 @@ public class CourseController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         List<Course> courseList = courseService.findAll(title);
+        if (courseList == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        return ResultUtil.success(courseList);
+    }
+    /**
+     * 返回给前台的课程数据
+     * @param title
+     * @return
+     */
+    @GetMapping("/findAllByLimit")
+    public BaseResponse<List<Course>> findAllByLimit(@RequestParam(defaultValue = " ") String title){
+        if(title == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        List<Course> courseList = courseService.findAllByLimit(title);
         if (courseList == null){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR);
         }

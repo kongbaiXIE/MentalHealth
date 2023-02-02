@@ -66,6 +66,22 @@ public class TeacherController {
         return ResultUtil.success(teacherList);
     }
     /**
+     * 返回给前端咨询师数据
+     * @param name
+     * @return
+     */
+    @GetMapping("/findAllByLimit")
+    public BaseResponse<List<Teacher>> findAllByLimit(@RequestParam(defaultValue = " ") String name){
+        if(name == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        List<Teacher> teacherList = teacherService.findAllByLimit(name);
+        if (teacherList == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        return ResultUtil.success(teacherList);
+    }
+    /**
      * 删除数据
      * @param id
      * @return
