@@ -10,14 +10,17 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.xzq.mentalhealth.common.ErrorCode;
 import com.xzq.mentalhealth.exception.BusinessException;
+import com.xzq.mentalhealth.mapper.CategoryMapper;
 import com.xzq.mentalhealth.mapper.PaperMapper;
 import com.xzq.mentalhealth.mapper.QuestionMapper;
 import com.xzq.mentalhealth.mapper.QuestionPaperMapper;
 import com.xzq.mentalhealth.model.dto.HandPaperDTO;
 import com.xzq.mentalhealth.model.dto.PaperDTO;
+import com.xzq.mentalhealth.model.entity.Category;
 import com.xzq.mentalhealth.model.entity.Paper;
 import com.xzq.mentalhealth.model.entity.Question;
 import com.xzq.mentalhealth.model.entity.QuestionPaper;
+import com.xzq.mentalhealth.model.vo.PaperFrontVO;
 import com.xzq.mentalhealth.service.PaperService;
 import com.xzq.mentalhealth.service.QuestionPaperService;
 import org.springframework.stereotype.Service;
@@ -40,6 +43,8 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper>
     PaperMapper paperMapper;
     @Resource
     QuestionMapper questionMapper;
+    @Resource
+    CategoryMapper categoryMapper;
     @Resource
     QuestionPaperMapper questionPaperMapper;
     @Resource
@@ -143,6 +148,53 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper>
             list.add(questionPaper);
         }
         return questionPaperService.saveBatch(list);
+    }
+    /**
+     * 前台分页查询
+     * @param pageNum
+     * @param pageSize
+     * @param categoryId
+     * @return
+     */
+    @Override
+    public Page<Paper> paperFrontList(long pageNum, long pageSize, String name, long categoryId) {
+
+        Page<Paper> paperPage = new Page<>(pageNum, pageSize);
+        //封装条件
+        QueryWrapper<Paper> wrapper = new QueryWrapper<>();
+        if(!StrUtil.isEmpty(name)) {
+            wrapper.like("name",name);
+        }
+        if(categoryId > 0){
+            wrapper.eq("categoryId",categoryId);
+        }
+        return paperMapper.selectPage(paperPage, wrapper);
+    }
+
+    /**
+     * 返回响应给前端的问卷信息数据
+     * @param paperId
+     * @return
+     */
+    @Override
+    public PaperFrontVO getFrontPaperInfo(long paperId) {
+        //根据paperId查看paper数据
+        Paper paper = paperMapper.selectById(paperId);
+        if(paper == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        Long categoryId = paper.getCategoryId();
+        Category category = categoryMapper.selectById(categoryId);
+        if (category == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+
+        PaperFrontVO paperFrontVO = new PaperFrontVO();
+        paperFrontVO.setPaperId(paper.getId());
+        paperFrontVO.setPaperCover(paper.getPaperCover());
+        paperFrontVO.setCategoryName(category.getName());
+        paperFrontVO.setDescription(paper.getDescription());
+        return paperFrontVO;
     }
 
     /**

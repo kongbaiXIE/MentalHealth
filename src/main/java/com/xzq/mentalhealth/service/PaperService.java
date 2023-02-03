@@ -6,6 +6,7 @@ import com.xzq.mentalhealth.model.dto.HandPaperDTO;
 import com.xzq.mentalhealth.model.dto.PaperDTO;
 import com.xzq.mentalhealth.model.entity.Paper;
 import com.xzq.mentalhealth.model.entity.Question;
+import com.xzq.mentalhealth.model.vo.PaperFrontVO;
 
 
 import java.util.List;
@@ -39,6 +40,7 @@ public interface PaperService extends IService<Paper> {
     List<Question> safeViewPaper(Long paperId);
     //手动创建问卷
     Boolean handPaper(HandPaperDTO handPaperDTO);
+    Page<Paper> paperFrontList(long pageNum, long pageSize, String name, long categoryId);
 
-
+    PaperFrontVO getFrontPaperInfo(long paperId);
 }

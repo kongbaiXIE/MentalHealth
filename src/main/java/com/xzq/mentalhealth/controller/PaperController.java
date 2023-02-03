@@ -12,6 +12,7 @@ import com.xzq.mentalhealth.model.dto.HandPaperDTO;
 import com.xzq.mentalhealth.model.dto.PaperDTO;
 import com.xzq.mentalhealth.model.entity.Paper;
 import com.xzq.mentalhealth.model.entity.Question;
+import com.xzq.mentalhealth.model.vo.PaperFrontVO;
 import com.xzq.mentalhealth.service.PaperService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -219,6 +220,46 @@ public class PaperController {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"修改失败");
         }
         return ResultUtil.success(integer);
+    }
+
+    /**
+     * 前台分页查询
+     * @param pageNum
+     * @param pageSize
+     * @param categoryId
+     * @return
+     */
+    @GetMapping ("/front/page")
+    public BaseResponse<Page<Paper>> pagePaperFront(@RequestParam long pageNum,
+                                                      @RequestParam long pageSize,
+                                                      @RequestParam(defaultValue = "-1") long categoryId,
+                                                      @RequestParam(defaultValue = "") String name){
+        if (pageNum < 0 && pageSize<0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Page<Paper> paperPage = paperService.paperFrontList(pageNum, pageSize, name,categoryId);
+        if (paperPage == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        return ResultUtil.success(paperPage);
+    }
+
+    /**
+     * 返回响应给前端的问卷信息数据
+     * @param paperId
+     * @return
+     */
+    @GetMapping("/getFrontPaperInfo/{paperId}")
+    public BaseResponse<PaperFrontVO> getFrontPaperInfo(@PathVariable long paperId){
+        if (paperId<0){
+            throw new BusinessException(ErrorCode.NULL_ERROR);
+        }
+        PaperFrontVO frontPaperInfo = paperService.getFrontPaperInfo(paperId);
+
+        if (frontPaperInfo == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        return ResultUtil.success(frontPaperInfo);
     }
 
 }
