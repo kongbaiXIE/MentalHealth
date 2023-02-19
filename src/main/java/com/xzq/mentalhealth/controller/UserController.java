@@ -169,4 +169,22 @@ public class UserController {
         }
         return ResultUtil.success(byUserAccount);
     }
+
+    /**
+     * 查询角色为咨询师的用户信息
+     * @param username
+     * @return
+     */
+    @GetMapping("/findByTeacher")
+    public BaseResponse<List<User>> findAllUserByTeacher(@RequestParam(defaultValue = "") String username){
+        if (username == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        List<User> allTeacher = userService.findAllTeacher(username);
+        if (allTeacher == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        return ResultUtil.success(allTeacher);
+
+    }
 }

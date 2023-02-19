@@ -49,7 +49,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
         orders.setCourseId(courseId);
         orders.setCourseTitle(coursePublish.getTitle());
         orders.setCourseCover(coursePublish.getCover());
-        orders.setTeacherName(coursePublish.getTeacherName());
+        orders.setTeacherName(coursePublish.getUsername());
         orders.setTotalFee(coursePublish.getPrice());
         orders.setUserId(userId);
         orders.setUserAccount(userAccount);

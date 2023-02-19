@@ -14,7 +14,7 @@ import java.util.List;
 */
 public interface CourseService extends IService<Course> {
 
-    Page<Course> courseList(long pageNum, long pageSize, long teacherId,String title);
+    Page<Course> courseList(long pageNum, long pageSize, long userIdByTeacher,String title);
 
     List<Course> findAll(String title);
     List<Course> findAllByLimit(String title);

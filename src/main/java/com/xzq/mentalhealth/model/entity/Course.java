@@ -26,7 +26,7 @@ public class Course implements Serializable {
     /**
      * 讲师id
      */
-    private Long teacherId;
+    private Long userId;
     /**
      * 课程专业id
      */
@@ -92,7 +92,7 @@ public class Course implements Serializable {
     private Integer isDelete;
     @TableField(exist = false)
 
-    private String teacherName;
+    private String username;
     @TableField(exist = false)
     private String subjectParentTitle;
     @TableField(exist = false)

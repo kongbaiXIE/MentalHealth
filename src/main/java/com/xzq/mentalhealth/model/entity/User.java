@@ -58,12 +58,23 @@ public class User implements Serializable {
      */
     @TableField(value = "phone")
     private String phone;
+    /**
+     * 用户简介
+     */
+    @TableField(value = "intro")
+    private String intro;
 
     /**
      * 邮箱
      */
     @TableField(value = "email")
     private String email;
+
+    /**
+     * 用户资历（主要是咨询师的相关证件）
+     */
+    @TableField(value = "career")
+    private String career;
 
     /**
      * 角色唯一标识

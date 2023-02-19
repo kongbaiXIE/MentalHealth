@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
+import java.util.WeakHashMap;
 
 
 /**
@@ -30,7 +32,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>
     @Resource
     CourseMapper courseMapper;
     @Resource
-    TeacherMapper teacherMapper;
+    UserMapper userMapper;
     @Resource
     SubjectMapper subjectMapper;
     @Resource
@@ -43,12 +45,12 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>
      * 后端分页查询
      * @param pageNum
      * @param pageSize
-     * @param teacherId
+     * @param userIdByTeacher
      * @param title
      * @return
      */
     @Override
-    public Page<Course> courseList(long pageNum, long pageSize, long teacherId,String title) {
+    public Page<Course> courseList(long pageNum, long pageSize, long userIdByTeacher,String title) {
         Page<Course> coursePage = new Page<>(pageNum, pageSize);
         //封装条件
         QueryWrapper<Course> wrapper = new QueryWrapper<>();
@@ -56,17 +58,26 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>
         if(!StrUtil.isEmpty(title)) {
             wrapper.like("title",title);
         }
-        if(teacherId>0) {
-           wrapper.eq("teacherId",teacherId);
+        if (userIdByTeacher>0){
+            wrapper.eq("userId",userIdByTeacher);
+        }
+        //判断当前用户的角色信息，如果是管理员则可以查询所有课程信息，如果是咨询师则只能查看自己发布的课程
+        User currentUser = TokenUtils.getUser();
+        if (currentUser == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        String role = currentUser.getRole();
+        if (Objects.equals(role, "ROLE_TEACHER")){
+            wrapper.eq("userId",currentUser.getId());
         }
         Page<Course> selectPage = courseMapper.selectPage(coursePage, wrapper);
         List<Course> records = selectPage.getRecords();
         records.forEach(item ->{
             //查询讲师名称
-            Long teacherId1 = item.getTeacherId();
-            Teacher teacher = teacherMapper.selectById(teacherId1);
-            if (teacher != null){
-                item.setTeacherName(teacher.getName());
+            Long userId1 = item.getUserId();
+            User user = userMapper.selectById(userId1);
+            if (user != null){
+                item.setUsername(user.getUsername());
             }
             //查询分类名称
             Subject subjectOne = subjectMapper.selectById(item.getSubjectPid());
@@ -93,7 +104,6 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>
         if (StrUtil.isNotBlank(title)){
             courseQueryWrapper.like("title",title);
         }
-
         return courseMapper.selectList(courseQueryWrapper);
     }
 
@@ -108,6 +118,8 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>
         if (StrUtil.isNotBlank(title)){
             courseQueryWrapper.like("title",title);
         }
+        //前台课程需要展示课程状态为发布状态
+        courseQueryWrapper.eq("status","1");
         courseQueryWrapper.last("limit 8");
         return courseMapper.selectList(courseQueryWrapper);
     }
@@ -155,12 +167,12 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>
     @Override
     public Course getCoursePublish(long courseId) {
         Course course = courseMapper.selectById(courseId);
-        Long teacherId = course.getTeacherId();
+        Long userId = course.getUserId();
         Long subjectId = course.getSubjectId();
         Long subjectPid = course.getSubjectPid();
-        Teacher teacher1 = teacherMapper.selectById(teacherId);
-        if (teacher1!=null){
-            course.setTeacherName(teacher1.getName());
+        User user = userMapper.selectById(userId);
+        if (user!=null){
+            course.setUsername(user.getUsername());
         }
         //查询分类名称
         Subject subjectOne = subjectMapper.selectById(subjectPid);
@@ -205,12 +217,12 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>
     @Override
     public CourseFrontVO getFrontCourseInfo(long courseId) {
         Course course = courseMapper.selectById(courseId);
-        Long teacherId = course.getTeacherId();
+        Long userId = course.getUserId();
         CourseFrontVO courseFrontVO = new CourseFrontVO();
-        Teacher teacher1 = teacherMapper.selectById(teacherId);
-        if (teacher1!=null){
-            course.setTeacherName(teacher1.getName());
-            courseFrontVO.setAvatar(teacher1.getAvatar());
+        User user1 = userMapper.selectById(userId);
+        if (user1!=null){
+            courseFrontVO.setTeacherName(user1.getUsername());
+            courseFrontVO.setAvatar(user1.getAvatarUrl());
         }
         //判断用户是否已经购买该课程
         User user = TokenUtils.getUser();
@@ -259,6 +271,8 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>
         if(!StrUtil.isEmpty(title)) {
             wrapper.like("title",title);
         }
+        //前台课程需要展示课程状态为发布状态
+        wrapper.eq("status","1");
         if(subjectId > 0){
             wrapper.eq("subjectId",subjectId);
         }

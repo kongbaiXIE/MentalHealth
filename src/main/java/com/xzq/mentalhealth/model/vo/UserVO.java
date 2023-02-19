@@ -41,9 +41,20 @@ public class UserVO {
      */
     private String phone;
     /**
+     * 用户简介
+     */
+    private String intro;
+
+    /**
      * 邮箱
      */
     private String email;
+
+    /**
+     * 用户资历（主要是咨询师的相关证件）
+     */
+    private String career;
+
     /**
      * 状态 0 - 正常
      */

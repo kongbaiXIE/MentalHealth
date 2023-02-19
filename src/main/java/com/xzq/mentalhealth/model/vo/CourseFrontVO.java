@@ -7,9 +7,9 @@ import java.math.BigDecimal;
 @Data
 public class CourseFrontVO {
     /**
-     * 讲师id
+     * 发布课程咨询师id
      */
-    private Long teacherId;
+    private Long userId;
     /**
      * 课程专业id
      */
@@ -56,7 +56,7 @@ public class CourseFrontVO {
     private Long viewCount;
 
     private String teacherName;
-
+    //咨询师头像
     private String avatar;
 
     private String subjectParentTitle;

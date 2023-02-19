@@ -59,4 +59,6 @@ public interface UserService extends IService<User> {
     Page<User> userList(long pageNum, long pageSize, String username, String email, String phone);
 
     UserVO findByUserAccount(String userAccount);
+
+    List<User> findAllTeacher(String username);
 }

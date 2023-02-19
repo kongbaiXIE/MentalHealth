@@ -6,6 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.xzq.mentalhealth.model.entity.Course">
             <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="userId" column="userId" jdbcType="BIGINT"/>
             <result property="subjectId" column="subjectId" jdbcType="BIGINT"/>
             <result property="subjectPid" column="subjectPid" jdbcType="BIGINT"/>
             <result property="title" column="title" jdbcType="VARCHAR"/>
@@ -15,7 +16,6 @@
             <result property="cover" column="cover" jdbcType="VARCHAR"/>
             <result property="buyCount" column="buyCount" jdbcType="BIGINT"/>
             <result property="viewCount" column="viewCount" jdbcType="BIGINT"/>
-            <result property="version" column="version" jdbcType="BIGINT"/>
             <result property="status" column="status" jdbcType="VARCHAR"/>
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
@@ -23,10 +23,10 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,subjectId,subjectPid,
-        title,description,price,
-        lessonNum,cover,buyCount,
-        viewCount,version,status,
+        id,userId,subjectId,
+        subjectPid,title,description,
+        price,lessonNum,cover,
+        buyCount,viewCount,status,
         createTime,updateTime,isDelete
     </sql>
 </mapper>

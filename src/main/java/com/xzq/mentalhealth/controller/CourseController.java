@@ -29,21 +29,21 @@ public class CourseController {
      * 分页查询
      * @param pageNum
      * @param pageSize
-     * @param teacherId
+     * @param userId
      * @param title
      * @return
      */
     @GetMapping("/page")
     public BaseResponse<Page<Course>> pageCourse(@RequestParam long pageNum,
                                                    @RequestParam long pageSize,
-                                                   @RequestParam(defaultValue = "-1")long teacherId,
+                                                   @RequestParam(defaultValue = "-1")long userId,
                                                    @RequestParam(defaultValue = "") String title) {
         if (pageNum < 0 && pageSize<0){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
 
-        Page<Course> courseList = courseService.courseList(pageNum, pageSize, teacherId,title);
+        Page<Course> courseList = courseService.courseList(pageNum, pageSize, userId,title);
         if (courseList == null){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR);
         }

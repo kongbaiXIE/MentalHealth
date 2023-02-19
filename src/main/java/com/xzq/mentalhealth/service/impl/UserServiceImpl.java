@@ -163,7 +163,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             List<Menu> children = menu.getChildren();
             children.removeIf(child -> !menuIdList.contains(child.getId()));
         }
-
+        
         userVO.setMenuList(roleMenus);
         userVO.setToken(token);
         ////脱敏
@@ -243,6 +243,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         //将用户数据拷贝到userVO上
         BeanUtils.copyProperties(user,userVO);
         return userVO;
+    }
+
+    /**
+     * 返回用户角色信息为咨询师的数据
+     * @param username
+     * @return
+     */
+    @Override
+    public List<User> findAllTeacher(String username) {
+
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.eq("role","ROLE_TEACHER");
+        List<User> users = userMapper.selectList(userQueryWrapper);
+        return users;
     }
 }
 

@@ -12,7 +12,9 @@
             <result property="gender" column="gender" jdbcType="TINYINT"/>
             <result property="userPassword" column="userPassword" jdbcType="VARCHAR"/>
             <result property="phone" column="phone" jdbcType="VARCHAR"/>
+            <result property="intro" column="intro" jdbcType="VARCHAR"/>
             <result property="email" column="email" jdbcType="VARCHAR"/>
+            <result property="career" column="career" jdbcType="VARCHAR"/>
             <result property="userStatus" column="userStatus" jdbcType="INTEGER"/>
             <result property="role" column="role" jdbcType="VARCHAR"/>
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
@@ -23,8 +25,8 @@
     <sql id="Base_Column_List">
         id,username,userAccount,
         avatarUrl,gender,userPassword,
-        phone,email,userStatus,
-        role,createTime,updateTime,
-        isDelete
+        phone,intro,email,
+        career,userStatus,role,
+        createTime,updateTime,isDelete
     </sql>
 </mapper>
