@@ -91,7 +91,6 @@ public class Course implements Serializable {
      */
     private Integer isDelete;
     @TableField(exist = false)
-
     private String username;
     @TableField(exist = false)
     private String subjectParentTitle;

@@ -23,7 +23,8 @@ import java.util.List;
 @Api(tags = "课程章节模块")
 @RestController
 @RequestMapping("/chapter")
-public class ChapterController {
+public class
+ChapterController {
     @Autowired
     private ChapterService chapterService;
     @Autowired

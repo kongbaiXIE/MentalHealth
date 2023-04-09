@@ -3,6 +3,8 @@ package com.xzq.mentalhealth.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xzq.mentalhealth.model.entity.User;
+import com.xzq.mentalhealth.model.vo.RoleTeacherVO;
+import com.xzq.mentalhealth.model.vo.TeacherFrontVO;
 import com.xzq.mentalhealth.model.vo.UserVO;
 
 import java.util.List;
@@ -61,4 +63,27 @@ public interface UserService extends IService<User> {
     UserVO findByUserAccount(String userAccount);
 
     List<User> findAllTeacher(String username);
+
+    /**
+     * 用户角色是咨询师的进行分页查询
+     * @param pageNum
+     * @param pageSize
+     * @param name
+     * @return
+     */
+    Page<User> teacherList(long pageNum, long pageSize, String name);
+
+    /**
+     * 返回该前端用户角色为咨询师的用户信息
+     * @param name
+     * @return
+     */
+    List<RoleTeacherVO> findAllByLimit(String name);
+
+    /**
+     * 根据角色为咨询师的id查询相关的课程信息
+     * @param teacherId
+     * @return
+     */
+    TeacherFrontVO getTeacherFrontInfo(long teacherId);
 }

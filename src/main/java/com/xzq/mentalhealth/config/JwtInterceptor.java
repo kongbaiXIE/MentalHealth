@@ -9,6 +9,7 @@ import com.xzq.mentalhealth.exception.BusinessException;
 import com.xzq.mentalhealth.model.entity.User;
 import com.xzq.mentalhealth.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -25,7 +26,7 @@ public class JwtInterceptor implements HandlerInterceptor {
     private UserService userService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) throws Exception {
 
         String token = request.getHeader("token");
         // 如果不是映射到方法直接通过

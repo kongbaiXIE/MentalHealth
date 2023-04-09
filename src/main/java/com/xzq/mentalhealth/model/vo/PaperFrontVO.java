@@ -7,6 +7,8 @@ public class PaperFrontVO {
 
     //问卷id
     private Long paperId;
+    //问卷名
+    private String name;
     //问卷方向
     private String categoryName;
     //问卷封面

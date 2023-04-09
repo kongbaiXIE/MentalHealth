@@ -191,6 +191,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper>
 
         PaperFrontVO paperFrontVO = new PaperFrontVO();
         paperFrontVO.setPaperId(paper.getId());
+        paperFrontVO.setName(paper.getName());
         paperFrontVO.setPaperCover(paper.getPaperCover());
         paperFrontVO.setCategoryName(category.getName());
         paperFrontVO.setDescription(paper.getDescription());

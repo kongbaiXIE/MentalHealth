@@ -1,18 +1,15 @@
 package com.xzq.mentalhealth.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xzq.mentalhealth.common.ErrorCode;
 import com.xzq.mentalhealth.exception.BusinessException;
-import com.xzq.mentalhealth.mapper.MenuMapper;
-import com.xzq.mentalhealth.mapper.RoleMapper;
-import com.xzq.mentalhealth.mapper.RoleMenuMapper;
-import com.xzq.mentalhealth.mapper.UserMapper;
-import com.xzq.mentalhealth.model.entity.Menu;
-import com.xzq.mentalhealth.model.entity.Role;
-import com.xzq.mentalhealth.model.entity.RoleMenu;
-import com.xzq.mentalhealth.model.entity.User;
+import com.xzq.mentalhealth.mapper.*;
+import com.xzq.mentalhealth.model.entity.*;
+import com.xzq.mentalhealth.model.vo.RoleTeacherVO;
+import com.xzq.mentalhealth.model.vo.TeacherFrontVO;
 import com.xzq.mentalhealth.model.vo.UserVO;
 import com.xzq.mentalhealth.service.MenuService;
 import com.xzq.mentalhealth.service.RoleService;
@@ -20,6 +17,7 @@ import com.xzq.mentalhealth.service.UserService;
 import com.xzq.mentalhealth.untils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.xmlbeans.impl.common.NameUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -52,6 +50,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     RoleService roleService;
     @Resource
     MenuService menuService;
+    @Resource
+    CourseMapper courseMapper;
     /**
      * 盐值 加密密码
      */
@@ -257,6 +257,93 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         userQueryWrapper.eq("role","ROLE_TEACHER");
         List<User> users = userMapper.selectList(userQueryWrapper);
         return users;
+    }
+
+    /**
+     * 分页条件查询
+     * @param pageNum
+     * @param pageSize
+     * @param name
+     * @return
+     */
+    @Override
+    public Page<User> teacherList(long pageNum, long pageSize, String name) {
+        Page<User>  userPage = new Page<>(pageNum, pageSize);
+        QueryWrapper<User> teacherQueryWrapper = new QueryWrapper<>();
+        teacherQueryWrapper.orderByAsc("createTime");
+        teacherQueryWrapper.eq("role","ROLE_TEACHER");
+        if (!"".equals(name)) {
+            teacherQueryWrapper.like("name", name);
+        }
+        Page<User> roleTeacherList = userMapper.selectPage(userPage, teacherQueryWrapper);
+        List<User> records = roleTeacherList.getRecords();
+        for (User user : records) {
+           user.setUserPassword(null);
+           user.setUserAccount(null);
+           user.setRole(null);
+           user.setCreateTime(null);
+           user.setUpdateTime(null);
+        }
+        roleTeacherList.setRecords(records);
+        return roleTeacherList ;
+    }
+    /**
+     * 返回该前端用户角色为咨询师的用户信息
+     * @param name
+     * @return
+     */
+    @Override
+    public List<RoleTeacherVO> findAllByLimit(String name) {
+        QueryWrapper<User> teacherQueryWrapper = new QueryWrapper<>();
+        teacherQueryWrapper.eq("role","ROLE_TEACHER");
+        if (StrUtil.isNotBlank(name)){
+            teacherQueryWrapper.like("name",name);
+        }
+        //使用last方法拼接sql语句
+        teacherQueryWrapper.last("limit 8");
+        List<User> users = userMapper.selectList(teacherQueryWrapper);
+        RoleTeacherVO roleTeacherVO = new RoleTeacherVO();
+        List<RoleTeacherVO> roleTeacherVOList = new ArrayList<>();
+        for (User user : users) {
+            roleTeacherVO.setTeacherName(user.getUsername());
+            roleTeacherVO.setId(user.getId());
+            roleTeacherVO.setCareer(user.getCareer());
+            roleTeacherVO.setIntro(user.getIntro());
+            roleTeacherVO.setAvatarUrl(user.getAvatarUrl());
+            roleTeacherVOList.add(roleTeacherVO);
+        }
+
+        return roleTeacherVOList;
+
+    }
+    /**
+     * 根据角色为咨询师的id查询相关的课程信息
+     * @param teacherId
+     * @return
+     */
+    @Override
+    public TeacherFrontVO getTeacherFrontInfo(long teacherId) {
+        User user = userMapper.selectById(teacherId);
+        if (user == null){
+            throw new BusinessException(ErrorCode.NULL_ERROR,"没有查询到该咨询师");
+        }
+        //通过咨询师id查询出对应的课程
+        QueryWrapper<Course> courseQueryWrapper = new QueryWrapper<>();
+        courseQueryWrapper.eq("userId",user.getId());
+        List<Course> courses = courseMapper.selectList(courseQueryWrapper);
+        TeacherFrontVO teacherFrontVO = new TeacherFrontVO();
+        //将查询出的用户数据set进roleTeacherVO
+        RoleTeacherVO roleTeacherVO = new RoleTeacherVO();
+        roleTeacherVO.setTeacherName(user.getUsername());
+        roleTeacherVO.setId(user.getId());
+        roleTeacherVO.setCareer(user.getCareer());
+        roleTeacherVO.setIntro(user.getIntro());
+        roleTeacherVO.setAvatarUrl(user.getAvatarUrl());
+
+        teacherFrontVO.setRoleTeacherVO(roleTeacherVO);
+        teacherFrontVO.setCourseList(courses);
+
+        return teacherFrontVO;
     }
 }
 

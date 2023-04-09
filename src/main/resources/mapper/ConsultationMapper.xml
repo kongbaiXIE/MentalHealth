@@ -6,6 +6,8 @@
 
     <resultMap id="BaseResultMap" type="com.xzq.mentalhealth.model.entity.Consultation">
             <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="teacherId" column="teacherId" jdbcType="BIGINT"/>
+            <result property="userId" column="userId" jdbcType="BIGINT"/>
             <result property="username" column="username" jdbcType="VARCHAR"/>
             <result property="teacherName" column="teacherName" jdbcType="VARCHAR"/>
             <result property="description" column="description" jdbcType="VARCHAR"/>
@@ -20,9 +22,10 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,username,teacherName,
-        description,reservationTime,startTime,
-        endTime,consultAbout,consultationStatus,
-        createTime,updateTime,isDelete
+        id,teacherId,userId,
+        username,teacherName,description,
+        reservationTime,startTime,endTime,
+        consultAbout,consultationStatus,createTime,
+        updateTime,isDelete
     </sql>
 </mapper>

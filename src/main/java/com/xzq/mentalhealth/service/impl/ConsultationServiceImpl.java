@@ -30,7 +30,6 @@ public class ConsultationServiceImpl extends ServiceImpl<ConsultationMapper, Con
 
     @Resource
     ConsultationMapper consultationMapper;
-
     /**
      * 分页查询
      * @param pageNum
@@ -50,7 +49,15 @@ public class ConsultationServiceImpl extends ServiceImpl<ConsultationMapper, Con
         if (StrUtil.isNotBlank(username)){
             ConsultationQueryWrapper.like("username",username);
         }
-
+        //判断当前用户的角色信息，如果是管理员则可以查询所有咨询信息，如果是咨询师则只能查看与自己相关的咨询预约信息
+        User currentUser = TokenUtils.getUser();
+        if (currentUser == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        String role = currentUser.getRole();
+        if (Objects.equals(role, "ROLE_TEACHER")){
+            ConsultationQueryWrapper.eq("teacherId",currentUser.getId());
+        }
         return consultationMapper.selectPage(ConsultationPage, ConsultationQueryWrapper);
     }
 
@@ -70,19 +77,20 @@ public class ConsultationServiceImpl extends ServiceImpl<ConsultationMapper, Con
 
     /**
      * 添加预约信息
-     * @param ConsultationDTO
+     * @param consultationDTO
      * @return
      */
     @Override
-    public Integer addConsultation(ConsultationDTO ConsultationDTO) {
-        String teacherName = ConsultationDTO.getName();
+    public Integer addConsultation(ConsultationDTO consultationDTO) {
+        String teacherName = consultationDTO.getTeacherName();
+        Long teacherId = consultationDTO.getId();
         if (teacherName == null){
             throw new BusinessException(ErrorCode.NULL_ERROR,"请求参数为空");
         }
-        if (ConsultationDTO.getDescription() == null){
+        if (consultationDTO.getDescription() == null){
             throw new BusinessException(ErrorCode.NULL_ERROR,"请求参数为空");
         }
-        Date ConsultationTime = ConsultationDTO.getReservationTime();
+        Date ConsultationTime = consultationDTO.getReservationTime();
         if (ConsultationTime == null){
             throw new BusinessException(ErrorCode.NULL_ERROR,"请求参数为空");
         }
@@ -90,7 +98,7 @@ public class ConsultationServiceImpl extends ServiceImpl<ConsultationMapper, Con
         if (new Date().after(ConsultationTime)){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"预约时间要大于当前时间");
         }
-        String username = ConsultationDTO.getUsername();
+        String username = consultationDTO.getUsername();
         User user = TokenUtils.getUser();
         //判断预约用户是否是当前登陆用户
         if (user == null){
@@ -101,18 +109,20 @@ public class ConsultationServiceImpl extends ServiceImpl<ConsultationMapper, Con
         }
         //为防止用户重复提交预约 通过用户账号和咨询师名字查询是否存在一个预约信息状态为预约中的重复预约信息
         QueryWrapper<Consultation> ConsultationQueryWrapper = new QueryWrapper<>();
-        ConsultationQueryWrapper.eq("username",username);
-        ConsultationQueryWrapper.eq("teacherName",teacherName);
+        ConsultationQueryWrapper.eq("teacherId",teacherId);
+        ConsultationQueryWrapper.eq("userId",user.getId());
         ConsultationQueryWrapper.eq("consultationStatus",0);
         Consultation consultation1 = consultationMapper.selectOne(ConsultationQueryWrapper);
         if (consultation1 != null){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"请不要重复提交预约信息");
         }
         Consultation consultation = new Consultation();
+        consultation.setTeacherId(teacherId);
+        consultation.setUserId(user.getId());
         consultation.setTeacherName(teacherName);
-        consultation.setDescription(ConsultationDTO.getDescription());
+        consultation.setDescription(consultationDTO.getDescription());
         consultation.setUsername(username);
-        consultation.setReservationTime(ConsultationDTO.getReservationTime());
+        consultation.setReservationTime(consultationDTO.getReservationTime());
         consultation.setConsultAbout("空");
         return consultationMapper.insert(consultation);
     }
