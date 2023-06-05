@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import lombok.Data;
 
@@ -58,11 +57,7 @@ public class User implements Serializable {
      */
     @TableField(value = "phone")
     private String phone;
-    /**
-     * 用户简介
-     */
-    @TableField(value = "intro")
-    private String intro;
+
 
     /**
      * 邮箱
@@ -71,17 +66,7 @@ public class User implements Serializable {
     private String email;
 
     /**
-     * 用户资历（主要是咨询师的相关证件）
-     */
-    @TableField(value = "career")
-    private String career;
 
-    /**
-     * 角色唯一标识
-     */
-    @TableField(value = "role")
-    private String role;
-    /**
      * 状态 0 - 正常
      */
     @TableField(value = "userStatus")

@@ -34,12 +34,7 @@ public class Role implements Serializable {
     private String comment;
 
     /**
-     * 角色唯一标识
-     */
-    @TableField(value = "flag")
-    private String flag;
 
-    /**
      * 创建时间
      */
     @TableField(value = "createTime")

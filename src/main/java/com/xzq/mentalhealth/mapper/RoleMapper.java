@@ -1,7 +1,6 @@
 package com.xzq.mentalhealth.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.xzq.mentalhealth.model.entity.Role;
+
 import org.apache.ibatis.annotations.Mapper;
 
 /**
