@@ -1,10 +1,6 @@
 package com.xzq.mentalhealth.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xzq.mentalhealth.model.entity.Role;
-import com.xzq.mentalhealth.service.RoleService;
-import com.xzq.mentalhealth.mapper.RoleMapper;
-import org.springframework.stereotype.Service;
+
 
 /**
 * @author 谢志强

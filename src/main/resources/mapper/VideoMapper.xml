@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xzq.mentalhealth.mapper.VideoMapper">
+
+    <resultMap id="BaseResultMap" type="com.xzq.mentalhealth.model.entity.Video">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="courseId" column="courseId" jdbcType="BIGINT"/>
+            <result property="chapterId" column="chapterId" jdbcType="BIGINT"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="videoUrl" column="videoUrl" jdbcType="VARCHAR"/>
+            <result property="play_count" column="play_count" jdbcType="BIGINT"/>
+            <result property="isFree" column="isFree" jdbcType="BIGINT"/>
+            <result property="version" column="version" jdbcType="BIGINT"/>
+            <result property="sort" column="sort" jdbcType="OTHER"/>
+            <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+            <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,courseId,chapterId,
+        title,videoUrl,play_count,
+        isFree,version,sort,
+        createTime,updateTime,isDelete
+    </sql>
+</mapper>

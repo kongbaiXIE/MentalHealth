@@ -1,7 +1,5 @@
 package com.xzq.mentalhealth.service;
 
-import com.xzq.mentalhealth.model.entity.Role;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
 * @author 谢志强

@@ -1,22 +1,12 @@
 package com.xzq.mentalhealth.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xzq.mentalhealth.common.ErrorCode;
-import com.xzq.mentalhealth.exception.BusinessException;
-import com.xzq.mentalhealth.model.entity.User;
-import com.xzq.mentalhealth.service.UserService;
-import com.xzq.mentalhealth.mapper.UserMapper;
-import com.xzq.mentalhealth.untils.TokenUtils;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 /**
 * @author 谢志强
@@ -29,6 +19,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements UserService{
     @Resource
     UserMapper userMapper;
+
     /**
      * 盐值 加密密码
      */
@@ -67,6 +58,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         User user = new User();
         user.setUserAccount(userAccount);
         user.setUserPassword(encryptPassword);
+
         boolean saveResult = this.save(user);
         if (!saveResult){
             return -1;
@@ -81,7 +73,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      * @return
      */
     @Override
-    public User userLogin(String userAccount, String userPassword) {
+
         //1.校验
         if (StringUtils.isAnyBlank(userAccount,userPassword)){
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"参数为空");
@@ -105,42 +97,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         queryWrapper.eq("userAccount",userAccount);
         queryWrapper.eq("userPassword",encryptPassword);
         User user = userMapper.selectOne(queryWrapper);
-        if (user == null){
-            log.info("user or password error");
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"账号或密码错误");
-        }
-        ////脱敏
-        User safeUser = safetyUser(user);
 
-        // 生成token
-        String token = TokenUtils.genToken(safeUser);
-        safeUser.setToken(token);
-        return safeUser;
-    }
-
-    /**
-     * 用户脱敏
-     * @param originUser
-     * @return
-     */
-    @Override
-    public User safetyUser(User originUser){
-        if(originUser == null){
-            return null;
-        }
-        User safeUser = new User();
-        safeUser.setId(originUser.getId());
-        safeUser.setUsername(originUser.getUsername());
-        safeUser.setUserAccount(originUser.getUserAccount());
-        safeUser.setAvatarUrl(originUser.getAvatarUrl());
-        safeUser.setGender(originUser.getGender());
-        safeUser.setEmail(originUser.getEmail());
-        safeUser.setUserStatus(originUser.getUserStatus());
-        safeUser.setPhone(originUser.getPhone());
-        safeUser.setCreateTime(originUser.getCreateTime());
-        safeUser.setUpdateTime(originUser.getUpdateTime());
-
-        return safeUser;
     }
 }
 

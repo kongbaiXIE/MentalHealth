@@ -9,8 +9,7 @@ import com.xzq.mentalhealth.exception.BusinessException;
 import com.xzq.mentalhealth.model.entity.User;
 import com.xzq.mentalhealth.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,9 +23,7 @@ public class JwtInterceptor implements HandlerInterceptor {
     private UserService userService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        String token = request.getHeader("token");
         //执行认证
         if (StrUtil.isBlank(token)){
             token  = request.getParameter("token");
@@ -54,7 +51,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         }
         try{
             //用户名验证token
-            JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getUserAccount())).build();
+
             jwtVerifier.verify(token);//验证token
         }catch (JWTVerificationException E){
             throw new BusinessException(ErrorCode.NOT_LOGIN,"token验证失败，请重新登录");

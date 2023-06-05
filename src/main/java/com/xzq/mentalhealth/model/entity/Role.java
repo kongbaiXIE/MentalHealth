@@ -34,6 +34,7 @@ public class Role implements Serializable {
     private String comment;
 
     /**
+
      * 创建时间
      */
     @TableField(value = "createTime")

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 
 /**
@@ -57,6 +58,7 @@ public class User implements Serializable {
     @TableField(value = "phone")
     private String phone;
 
+
     /**
      * 邮箱
      */
@@ -64,6 +66,7 @@ public class User implements Serializable {
     private String email;
 
     /**
+
      * 状态 0 - 正常
      */
     @TableField(value = "userStatus")
@@ -87,8 +90,7 @@ public class User implements Serializable {
     @TableField(value = "isDelete")
     private Integer isDelete;
 
-    @TableField(exist = false)
-    private String token;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

@@ -8,15 +8,7 @@ import com.xzq.mentalhealth.exception.BusinessException;
 import com.xzq.mentalhealth.model.entity.User;
 import com.xzq.mentalhealth.model.requsest.UserLoginRequest;
 import com.xzq.mentalhealth.model.requsest.UserRegisterRequest;
-import com.xzq.mentalhealth.service.UserService;
-import io.swagger.annotations.Api;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 
 /**
  * 用户接口
@@ -47,7 +39,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public BaseResponse<User> userLogin(@RequestBody UserLoginRequest userLoginRequest){
+
         if (userLoginRequest == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -56,13 +48,5 @@ public class UserController {
         if (StringUtils.isAnyBlank(userAccount,userPassword)){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User user = userService.userLogin(userAccount, userPassword);
-        return ResultUtil.success(user);
-
-    }
-
-
-
-
 
 }

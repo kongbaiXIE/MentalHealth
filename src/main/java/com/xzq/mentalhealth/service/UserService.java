@@ -1,7 +1,6 @@
 package com.xzq.mentalhealth.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.xzq.mentalhealth.model.entity.User;
+
 
 
 /**
@@ -19,7 +18,7 @@ public interface UserService extends IService<User> {
      * @return 新用户id
      */
 
-    long userRegister( String userAccount, String userPassword, String checkPassword);
+
 
     /**
      *  用户登录
@@ -27,12 +26,5 @@ public interface UserService extends IService<User> {
      * @param userPassword 用户密码
      * @return 用户
      */
-    User userLogin(String userAccount, String userPassword);
 
-    /**
-     * 用户脱敏
-     * @param originUser
-     * @return
-     */
-    User safetyUser(User originUser);
 }
